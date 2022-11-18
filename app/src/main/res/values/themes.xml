@@ -1,0 +1,249 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Bible" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorSecondaryVariant">@color/purple_500</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Custom -->
+        <item name="splashBackground">#FFFFFF</item>
+        <item name="splashTextGradientStart">#E0704D</item>
+        <item name="splashTextGradientEnd">#E7C770</item>
+
+        <item name="mainBackground">#FFFFFF</item>
+        <item name="mainToolbarGradientStart">#E0704D</item>
+        <item name="mainToolbarGradientEnd">#E7C770</item>
+
+        <item name="feedbackTitle">@color/black</item>
+        <item name="feedbackText">@color/black</item>
+        <item name="feedbackHelpUs">@color/black</item>
+        <item name="feedbackName">@color/black</item>
+        <item name="feedbackDescription">#90000000</item>
+        <item name="feedbackIcon">@color/black</item>
+        <item name="feedbackPolicy">#E0714E</item>
+
+        <item name="listItem">#F0F0F0</item>
+        <item name="listItemPress">#E1E1E1</item>
+        <item name="listItemName">@color/black</item>
+
+        <item name="contentTitle">#E0704D</item>
+        <item name="contentItemNumber">@color/black</item>
+
+        <item name="favoriteItem">#F0F0F0</item>
+        <item name="favoriteItemPress">#E1E1E1</item>
+        <item name="favoriteItemIcon">@color/black</item>
+        <item name="favoriteItemName">@color/black</item>
+        <item name="favoriteItemTotal">#B2000000</item>
+
+        <item name="favoriteItemBook">@color/white</item>
+        <item name="favoriteItemBookPress">#E8E8E8</item>
+        <item name="favoriteItemBookName">@color/black</item>
+        <item name="favoriteItemBookTotal">#EFEFEF</item>
+        <item name="favoriteItemBookTotalColor">@color/black</item>
+
+        <item name="favoriteItemBookDivider">#F6F6F6</item>
+        <item name="favoriteDialog">@color/white</item>
+        <item name="favoriteDialogTitle">@color/black</item>
+        <item name="favoriteDialogIconClose">@color/black</item>
+        <item name="favoriteDialogEditText">#EFEFEF</item>
+
+        <item name="favoriteDialogEditTextColor">@color/black</item>
+        <item name="favoriteDialogEditHintColor">#999</item>
+        <item name="favoriteDialogButtonLeft">#42BC55</item>
+        <item name="favoriteDialogButtonLeftPress">#3FB151</item>
+        <item name="favoriteDialogButtonLeftColor">@color/white</item>
+
+        <item name="favoriteDialogButtonRight">#EFEFEF</item>
+        <item name="favoriteDialogButtonRightPress">#E8E8E8</item>
+        <item name="favoriteDialogButtonRightColor">#545454</item>
+
+        <item name="searchResultText">@color/black</item>
+        <item name="searchIconColor">@color/black</item>
+        <item name="searchItemName">@color/black</item>
+        <item name="searchItemText">@color/black</item>
+        <item name="searchCheckBox">@color/purple_500</item>
+
+        <item name="settingsTextExample">@color/black</item>
+        <item name="settingsFab">#E0714E</item>
+        <item name="settingsToggle">#EDEDED</item>
+        <item name="settingsToggleSelect">#19E1754F</item>
+        <item name="settingsToggleName">@color/black</item>
+        <item name="settingsToggleArrow">@color/black</item>
+        <item name="settingsSpinner">#F1F1F1</item>
+        <item name="settingsText">@color/black</item>
+
+        <item name="folderItemName">@color/black</item>
+        <item name="folderItemText">@color/black</item>
+        <item name="folderItemDate">#787878</item>
+        <item name="folderDefaultFolder">#787878</item>
+        <item name="folderDialog">@color/white</item>
+        <item name="folderDialogTitle">@color/black</item>
+
+        <item name="mainItemText">@color/black</item>
+        <item name="mainItemDefaultFolder">#999</item>
+        <item name="mainButtonRead">#E0714E</item>
+        <item name="mainButtonReadSelect">#FFE1DF</item>
+        <item name="mainButtonReadText">@color/white</item>
+        <item name="mainButtonReadTextSelect">#E0714E</item>
+        <item name="mainBottomSheet">@color/white</item>
+        <item name="mainBottomSheetIcon">@color/black</item>
+        <item name="mainBottomSheetRecyclerViewBorder">#F1F1F1</item>
+        <item name="mainBottomSheetFolderName">@color/black</item>
+        <item name="mainBottomSheetItemName">@color/black</item>
+        <item name="mainBottomSheetItemDivider">#0D000000</item>
+        <item name="mainBottomSheetButtonRight">#EFEFEF</item>
+        <item name="mainBottomSheetButtonRightPress">#E8E8E8</item>
+        <item name="mainBottomSheetButtonRightText">#545454</item>
+        <item name="mainBottomSheetDivider">#F6F6F6</item>
+
+        <item name="dialogShare">@color/white</item>
+        <item name="dialogShareTitle">@color/black</item>
+        <item name="dialogShareIconClose">@color/black</item>
+        <item name="dialogShareButtonRight">#F1F1F1</item>
+        <item name="dialogShareButtonRightIconShare">@color/black</item>
+        <item name="dialogShareButtonRightName">@color/black</item>
+
+        <item name="mainSidebar">@color/white</item>
+        <item name="mainSidebarItemIcon">@color/black</item>
+        <item name="mainSidebarItemName">@color/black</item>
+        <item name="mainSidebarItemNameDivider">#F6F6F6</item>
+    </style>
+
+    <style name="Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorSecondaryVariant">@color/purple_500</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Custom -->
+        <item name="splashBackground">#151515</item>
+        <item name="splashTextGradientStart">#888</item>
+        <item name="splashTextGradientEnd">#444</item>
+
+        <item name="mainBackground">#151515</item>
+        <item name="mainToolbarGradientStart">#D1944C</item>
+        <item name="mainToolbarGradientEnd">#C96140</item>
+
+        <item name="feedbackTitle">@color/white</item>
+        <item name="feedbackText">@color/white</item>
+        <item name="feedbackHelpUs">@color/white</item>
+        <item name="feedbackName">@color/white</item>
+        <item name="feedbackDescription">#80FFFFFF</item>
+        <item name="feedbackIcon">@color/white</item>
+        <item name="feedbackPolicy">#E0714E</item>
+
+        <item name="listItem">#252525</item>
+        <item name="listItemPress">#202020</item>
+        <item name="listItemName">@color/white</item>
+
+        <item name="contentTitle">#E0704D</item>
+        <item name="contentItemNumber">@color/white</item>
+
+        <item name="favoriteItem">#1AADADAD</item>
+        <item name="favoriteItemPress">#10ADADAD</item>
+        <item name="favoriteItemIcon">@color/white</item>
+        <item name="favoriteItemName">@color/white</item>
+        <item name="favoriteItemTotal">#80FFFFFF</item>
+
+        <item name="favoriteItemBook">#151515</item>
+        <item name="favoriteItemBookPress">#101010</item>
+        <item name="favoriteItemBookName">@color/white</item>
+        <item name="favoriteItemBookTotal">#151515</item>
+        <item name="favoriteItemBookTotalColor">@color/white</item>
+
+        <item name="favoriteItemBookDivider">#343434</item>
+        <item name="favoriteDialog">#282828</item>
+        <item name="favoriteDialogTitle">@color/white</item>
+        <item name="favoriteDialogIconClose">@color/white</item>
+        <item name="favoriteDialogEditText">#1AADADAD</item>
+
+        <item name="favoriteDialogEditTextColor">@color/white</item>
+        <item name="favoriteDialogEditHintColor">#666</item>
+        <item name="favoriteDialogButtonLeft">#42BC55</item>
+        <item name="favoriteDialogButtonLeftPress">#3FB151</item>
+        <item name="favoriteDialogButtonLeftColor">@color/white</item>
+
+        <item name="favoriteDialogButtonRight">#26ADADAD</item>
+        <item name="favoriteDialogButtonRightPress">#13ADADAD</item>
+        <item name="favoriteDialogButtonRightColor">@color/white</item>
+
+        <item name="searchResultText">@color/white</item>
+        <item name="searchIconColor">@color/white</item>
+        <item name="searchItemName">@color/white</item>
+        <item name="searchItemText">@color/white</item>
+        <item name="searchCheckBox">@color/purple_500</item>
+
+        <item name="settingsTextExample">@color/white</item>
+        <item name="settingsFab">#E0714E</item>
+        <item name="settingsToggle">#26ADADAD</item>
+        <item name="settingsToggleSelect">#1AADADAD</item>
+        <item name="settingsToggleName">@color/white</item>
+        <item name="settingsToggleArrow">@color/white</item>
+        <item name="settingsSpinner">#242424</item>
+        <item name="settingsText">@color/white</item>
+
+        <item name="folderItemName">@color/white</item>
+        <item name="folderItemText">@color/white</item>
+        <item name="folderItemDate">#80FFFFFF</item>
+        <item name="folderDefaultFolder">#80FFFFFF</item>
+        <item name="folderDialog">#282828</item>
+        <item name="folderDialogTitle">@color/white</item>
+
+        <item name="mainItemText">@color/white</item>
+        <item name="mainItemDefaultFolder">#80FFFFFF</item>
+        <item name="mainButtonRead">#E0714E</item>
+        <item name="mainButtonReadSelect">#26E7C770</item>
+        <item name="mainButtonReadText">@color/white</item>
+        <item name="mainButtonReadTextSelect">#E0714E</item>
+        <item name="mainBottomSheet">#282828</item>
+        <item name="mainBottomSheetIcon">@color/white</item>
+        <item name="mainBottomSheetRecyclerViewBorder">#353535</item>
+        <item name="mainBottomSheetFolderName">@color/white</item>
+        <item name="mainBottomSheetItemName">@color/white</item>
+        <item name="mainBottomSheetItemDivider">#1AADADAD</item>
+        <item name="mainBottomSheetButtonRight">#26ADADAD</item>
+        <item name="mainBottomSheetButtonRightPress">#13ADADAD</item>
+        <item name="mainBottomSheetButtonRightText">@color/white</item>
+        <item name="mainBottomSheetDivider">#343434</item>
+
+        <item name="dialogShare">#282828</item>
+        <item name="dialogShareTitle">@color/white</item>
+        <item name="dialogShareIconClose">@color/white</item>
+        <item name="dialogShareButtonRight">#343434</item>
+        <item name="dialogShareButtonRightIconShare">@color/white</item>
+        <item name="dialogShareButtonRightName">@color/white</item>
+
+        <item name="mainSidebar">#282828</item>
+        <item name="mainSidebarItemIcon">@color/white</item>
+        <item name="mainSidebarItemName">@color/white</item>
+        <item name="mainSidebarItemNameDivider">#343434</item>
+    </style>
+
+    <style name="MineCustomTabText" parent="Widget.Design.TabLayout">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+    <style name="DialogAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/dialog_hide</item>
+    </style>
+</resources>

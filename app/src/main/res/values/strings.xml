@@ -1,0 +1,136 @@
+<resources>
+    <string name="app_name">Bible</string>
+    <string name="admob_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="policy">https://site.ru/policy</string>
+    <string name="email">test@gmail.com</string>
+    <!-- General -->
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="search">Search</string>
+    <string name="all">All</string>
+    <string name="ot">OT</string>
+    <string name="nt">NT</string>
+    <string name="default_folder">Default folder</string>
+    <string name="folder_name">Folder name</string>
+    <string name="feedback">Feedback</string>
+    <string name="favorites">Favorites</string>
+    <string name="settings">Settings</string>
+
+    <!-- Menu -->
+    <string name="menu_app_name">NKJV Bible</string>
+    <string name="menu_share_app">Share app</string>
+    <string name="menu_day_night">Day/Night</string>
+    <string name="splash">NKJV\nBIBLE</string>
+
+    <!-- Notification -->
+    <string name="notification_title">Title</string>
+    <string name="notification_text">Text</string>
+
+    <!-- Share -->
+    <string name="share_popup_main">Share bible</string>
+    <string name="share_popup_search">Share bible</string>
+    <string name="share_popup_dialog">Select app for share</string>
+    <string name="share_popup_email">Choose an Email client</string>
+    <string name="share_main_title">NKJV Bible</string>
+    <string name="share_search_title">NKJV Bible</string>
+    <string name="twitter_text">I\'m enjoying this app</string>
+    <string name="twitter_hashtag">#bible #holy_bible</string>
+    <string name="dialog_share_title">Share this app</string>
+    <string name="dialog_share_other_app">Other app</string>
+    <string name="dialog_share_text">I\'m enjoying this app</string>
+
+    <!-- Email -->
+    <string name="email_subject">Subject</string>
+    <string name="email_message">Message</string>
+
+    <!-- Main -->
+    <string name="i_read_it">I read it</string>
+
+    <!-- Content -->
+    <string name="content_chapter">Contents: Chapters</string>
+    <string name="content_verse">Contents: Verse</string>
+
+    <!-- Favorites dialog -->
+    <string name="create_folder">Create folder</string>
+    <string name="edit_folder">Edit folder</string>
+
+    <!-- Search -->
+    <string name="exact_phrase">exact phrase</string>
+    <string name="partial">partial</string>
+    <string name="results">results</string>
+    <string name="select_all">Select all</string>
+
+    <!-- Settings -->
+    <string name="settings_font">Font</string>
+    <string name="settings_audio">Audio</string>
+    <string name="settings_other">Other</string>
+    <string name="language">Language</string>
+    <string name="selection">Selection</string>
+    <string name="reading_speed">Reading speed</string>
+    <string name="speech_pitch">Speech pitch</string>
+    <string name="font">Font</string>
+    <string name="font_size">Font size</string>
+    <string name="line_spacing">Line spacing</string>
+    <string name="settings_text">
+        1 Samson went down to Timnah and saw there a young Philistine woman.\n\n
+        2 When he returned, he said to his father and mother, “I have seen a Philistine woman in Timnah; now get her for me as my wife.”\n\n
+        3 His father and mother replied, “Isn’t there an acceptable woman among your relatives or among all our people? Must you go to the uncircumcised Philistines to get a wife?”
+    </string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">The Amplified Bible</string>
+    <string name="feedback_text">Dear users! We hope you like this app. But if you have any problems/questions or just want to encourage us we would love to hear from you any review about the app!</string>
+    <string name="feedback_help_us">Help Us</string>
+    <string name="feedback_rate">Rate us</string>
+    <string name="feedback_rate_description">Rate us on Google Play!</string>
+    <string name="feedback_share">Share this app</string>
+    <string name="feedback_share_description">Share this app with your friends!</string>
+    <string name="feedback_contact">Contact</string>
+    <string name="feedback_contact_description">We would love to hear from you any massage.\nThank you!</string>
+    <string name="feedback_policy">Privacy Policy</string>
+
+    <!-- Rate us -->
+    <string name="rate_title">Rate us</string>
+    <string name="rate_message">Rate message</string>
+    <string name="rate_button_left">No, thanks</string>
+    <string name="rate_button_center">Later</string>
+    <string name="rate_button_right">Rate us</string>
+
+    <!-- Message -->
+    <string name="browser_not_found">Browser not found</string>
+    <string name="google_play_not_found">Google play not found</string>
+    <string name="mail_app_not_found">Mail app not found</string>
+    <string name="twitter_not_installed">Twitter is not installed</string>
+    <string name="write_the_name">Write the name</string>
+    <string name="name_is_not_available">This name is not available</string>
+    <string name="duplicate_folder">Such folder already exists</string>
+    <string name="max_limit_reached">You cannot reach a limit of more than 50</string>
+    <string name="no_items_selected">No items selected</string>
+    <string name="app_could_not_copy_text">The app could not copy the text</string>
+    <string name="text_copied">Text copied</string>
+    <string name="dialog_delete_folder">Do you want to delete the folder?</string>
+    <string name="dialog_delete_item">Do you want to delete the item?</string>
+
+    <string-array name="font">
+        <item>Default</item>
+        <item>Sans</item>
+        <item>Serif</item>
+        <item>Monospace</item>
+        <item>Lobster</item>
+        <item>Sitka</item>
+        <item>Poppins</item>
+    </string-array>
+    <string-array name="language">
+        <item>English (United States)</item>
+        <item>English (United Kingdom)</item>
+        <item>English (Australia)</item>
+    </string-array>
+    <string-array name="selection">
+        <item>Background</item>
+        <item>Border</item>
+    </string-array>
+</resources>

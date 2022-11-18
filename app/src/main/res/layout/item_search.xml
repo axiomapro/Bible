@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:orientation="vertical">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/itemCheckBox"
+            android:visibility="gone"
+            android:layout_gravity="center_vertical"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_marginEnd="5dp"
+            android:buttonTint="?attr/searchCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/itemName"
+                android:text="Genesis 1:9"
+                android:textStyle="bold"
+                android:textColor="?attr/searchItemName"
+                android:textSize="17sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/itemText"
+                android:layout_marginTop="10dp"
+                android:lineSpacingExtra="5dp"
+                android:textSize="15sp"
+                android:text="Then God said, “Let the waters under the heavens be gathered together into one place, and let dry land apper”; and it was so."
+                android:textColor="?attr/searchItemText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+    </GridLayout>
+
+
+
+</LinearLayout>

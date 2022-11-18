@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="theme">
+        <attr name="splashBackground" format="color"/>
+        <attr name="splashTextGradientStart" format="color"/>
+        <attr name="splashTextGradientEnd" format="color"/>
+
+        <attr name="mainBackground" format="color"/>
+        <attr name="mainToolbarGradientStart" format="color"/>
+        <attr name="mainToolbarGradientEnd" format="color"/>
+
+        <attr name="feedbackTitle" format="color"/>
+        <attr name="feedbackText" format="color"/>
+        <attr name="feedbackHelpUs" format="color"/>
+        <attr name="feedbackName" format="color"/>
+        <attr name="feedbackDescription" format="color"/>
+        <attr name="feedbackIcon" format="color"/>
+        <attr name="feedbackPolicy" format="color"/>
+
+        <attr name="listItem" format="color"/>
+        <attr name="listItemPress" format="color"/>
+        <attr name="listItemName" format="color"/>
+
+        <attr name="contentTitle" format="color"/>
+        <attr name="contentItemNumber" format="color"/>
+
+        <attr name="favoriteItem" format="color"/>
+        <attr name="favoriteItemPress" format="color"/>
+        <attr name="favoriteItemIcon" format="color"/>
+        <attr name="favoriteItemName" format="color"/>
+        <attr name="favoriteItemTotal" format="color"/>
+
+        <attr name="favoriteItemBook" format="color"/>
+        <attr name="favoriteItemBookPress" format="color"/>
+        <attr name="favoriteItemBookName" format="color"/>
+        <attr name="favoriteItemBookTotal" format="color"/>
+        <attr name="favoriteItemBookTotalColor" format="color"/>
+
+        <attr name="favoriteItemBookDivider" format="color"/>
+        <attr name="favoriteDialog" format="color"/>
+        <attr name="favoriteDialogTitle" format="color"/>
+        <attr name="favoriteDialogIconClose" format="color"/>
+        <attr name="favoriteDialogEditText" format="color"/>
+
+        <attr name="favoriteDialogEditTextColor" format="color"/>
+        <attr name="favoriteDialogEditHintColor" format="color"/>
+        <attr name="favoriteDialogButtonLeft" format="color"/>
+        <attr name="favoriteDialogButtonLeftPress" format="color"/>
+        <attr name="favoriteDialogButtonLeftColor" format="color"/>
+
+        <attr name="favoriteDialogButtonRight" format="color"/>
+        <attr name="favoriteDialogButtonRightPress" format="color"/>
+        <attr name="favoriteDialogButtonRightColor" format="color"/>
+
+        <attr name="searchResultText" format="color"/>
+        <attr name="searchIconColor" format="color"/>
+        <attr name="searchItemName" format="color"/>
+        <attr name="searchItemText" format="color"/>
+        <attr name="searchCheckBox" format="color"/>
+
+        <attr name="settingsTextExample" format="color"/>
+        <attr name="settingsFab" format="color"/>
+        <attr name="settingsToggle" format="color"/>
+        <attr name="settingsToggleSelect" format="color"/>
+        <attr name="settingsToggleName" format="color"/>
+        <attr name="settingsToggleArrow" format="color"/>
+        <attr name="settingsSpinner" format="color"/>
+        <attr name="settingsText" format="color"/>
+
+        <attr name="folderItemName" format="color"/>
+        <attr name="folderItemText" format="color"/>
+        <attr name="folderItemDate" format="color"/>
+        <attr name="folderDefaultFolder" format="color"/>
+        <attr name="folderDialog" format="color"/>
+        <attr name="folderDialogTitle" format="color"/>
+
+        <attr name="mainItemText" format="color"/>
+        <attr name="mainItemDefaultFolder" format="color"/>
+        <attr name="mainButtonRead" format="color"/>
+        <attr name="mainButtonReadSelect" format="color"/>
+        <attr name="mainButtonReadText" format="color"/>
+        <attr name="mainButtonReadTextSelect" format="color"/>
+        <attr name="mainBottomSheet" format="color"/>
+        <attr name="mainBottomSheetIcon" format="color"/>
+        <attr name="mainBottomSheetRecyclerViewBorder" format="color"/>
+        <attr name="mainBottomSheetFolderName" format="color"/>
+        <attr name="mainBottomSheetItemName" format="color"/>
+        <attr name="mainBottomSheetItemDivider" format="color"/>
+        <attr name="mainBottomSheetButtonRight" format="color"/>
+        <attr name="mainBottomSheetButtonRightPress" format="color"/>
+        <attr name="mainBottomSheetButtonRightText" format="color"/>
+        <attr name="mainBottomSheetDivider" format="color"/>
+
+        <attr name="dialogShare" format="color"/>
+        <attr name="dialogShareTitle" format="color"/>
+        <attr name="dialogShareIconClose" format="color"/>
+        <attr name="dialogShareButtonRight" format="color"/>
+        <attr name="dialogShareButtonRightIconShare" format="color"/>
+        <attr name="dialogShareButtonRightName" format="color"/>
+
+        <attr name="mainSidebar" format="color"/>
+        <attr name="mainSidebarItemIcon" format="color"/>
+        <attr name="mainSidebarItemName" format="color"/>
+        <attr name="mainSidebarItemNameDivider" format="color"/>
+    </declare-styleable>
+</resources>

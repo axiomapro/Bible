@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/mainBackground"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:paddingEnd="20dp"
+        android:background="@drawable/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageViewBack"
+                android:src="@drawable/ic_back"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <GridLayout
+                    android:id="@+id/gridLayoutTabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayoutAll"
+                        android:orientation="vertical"
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:text="@string/all"
+                            android:textSize="20sp"
+                            android:textColor="@color/white"
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <View
+                            android:id="@+id/viewAllBottom"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/white"
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayoutOt"
+                        android:orientation="vertical"
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:text="@string/ot"
+                            android:textSize="20sp"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <View
+                            android:id="@+id/viewOtBottom"
+                            android:visibility="invisible"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/white"
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayoutNt"
+                        android:orientation="vertical"
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:text="@string/nt"
+                            android:textSize="20sp"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <View
+                            android:id="@+id/viewNtBottom"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/white"
+                            android:visibility="invisible"
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"/>
+
+                    </RelativeLayout>
+
+                </GridLayout>
+
+                <GridLayout
+                    android:id="@+id/gridLayoutSearch"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <FrameLayout
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/editTextSearch"
+                            android:hint="@string/search"
+                            android:textCursorDrawable="@color/white"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="16sp"
+                            android:paddingEnd="40dp"
+                            android:paddingStart="15dp"
+                            android:maxLines="1"
+                            android:imeOptions="actionSearch"
+                            android:inputType="text"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/edittext_search"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/imageViewClear"
+                            android:visibility="invisible"
+                            android:layout_gravity="end|center_vertical"
+                            android:src="@drawable/ic_close_white"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </FrameLayout>
+
+                </GridLayout>
+
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/imageViewSearch"
+                android:src="@drawable/ic_search"
+                android:padding="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:clipToPadding="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

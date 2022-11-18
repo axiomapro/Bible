@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/mainBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:paddingEnd="20dp"
+        android:background="@drawable/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageViewBack"
+                android:src="@drawable/ic_back"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/settings"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:paddingStart="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </GridLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <ScrollView
+                android:overScrollMode="never"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textViewExample"
+                        android:textSize="17sp"
+                        android:textColor="?attr/settingsTextExample"
+                        android:text="@string/settings_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                app:backgroundTint="?attr/settingsFab"
+                app:elevation="0dp"
+                app:tint="#fff"
+                android:src="@drawable/ic_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="16dp"/>
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:overScrollMode="never"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <GridLayout
+                    android:id="@+id/gridLayoutFont"
+                    android:padding="15dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/selector_toggle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/settings_font"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="?attr/settingsToggleName"
+                        android:layout_columnWeight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/imageViewFontArrow"
+                        android:src="@drawable/ic_down_settings"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </GridLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutFont"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <GridLayout
+                        android:layout_marginTop="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/font"
+                            android:textColor="?attr/settingsText"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <Spinner
+                            android:id="@+id/spinnerFont"
+                            android:layout_columnWeight="1"
+                            android:paddingTop="15dp"
+                            android:paddingBottom="15dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:background="@drawable/spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </GridLayout>
+
+                    <GridLayout
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/font_size"
+                            android:textColor="?attr/settingsText"
+                            android:layout_columnWeight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/textViewFontSize"
+                            android:textColor="?attr/settingsText"
+                            android:text="10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </GridLayout>
+
+                    <SeekBar
+                        android:id="@+id/seekbarFontSize"
+                        android:max="5"
+                        android:tag="fontSize"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <GridLayout
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/line_spacing"
+                            android:textColor="?attr/settingsText"
+                            android:layout_columnWeight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/textViewLineSpacing"
+                            android:textColor="?attr/settingsText"
+                            android:text="3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </GridLayout>
+
+                    <SeekBar
+                        android:id="@+id/seekbarLineSpacing"
+                        android:max="10"
+                        android:tag="lineSpacing"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <GridLayout
+                    android:id="@+id/gridLayoutAudio"
+                    android:padding="15dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/selector_toggle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/settings_audio"
+                        android:textColor="?attr/settingsToggleName"
+                        android:layout_gravity="center_vertical"
+                        android:layout_columnWeight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/imageViewAudioArrow"
+                        android:src="@drawable/ic_down_settings"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </GridLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutAudio"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:paddingTop="15dp"
+                        android:paddingBottom="10dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/language"
+                            android:textStyle="bold"
+                            android:textColor="?attr/settingsText"
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <Spinner
+                            android:id="@+id/spinnerLanguage"
+                            android:paddingTop="15dp"
+                            android:paddingBottom="15dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:background="@drawable/spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <GridLayout
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/reading_speed"
+                            android:textColor="?attr/settingsText"
+                            android:layout_columnWeight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/textViewReadingSpeed"
+                            android:text="1.0"
+                            android:textColor="?attr/settingsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </GridLayout>
+
+                    <SeekBar
+                        android:id="@+id/seekbarReadingSpeed"
+                        android:max="10"
+                        android:tag="readingSpeed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <GridLayout
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:textColor="?attr/settingsText"
+                            android:text="@string/speech_pitch" />
+
+                        <TextView
+                            android:id="@+id/textViewSpeechPitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="?attr/settingsText"
+                            android:text="1.0" />
+
+                    </GridLayout>
+
+                    <SeekBar
+                        android:id="@+id/seekbarSpeechPitch"
+                        android:max="10"
+                        android:tag="speechPitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <GridLayout
+                    android:id="@+id/gridLayoutOther"
+                    android:padding="15dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/selector_toggle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/settings_other"
+                        android:textColor="?attr/settingsToggleName"
+                        android:layout_gravity="center_vertical"
+                        android:layout_columnWeight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/imageViewOtherArrow"
+                        android:src="@drawable/ic_down_settings"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </GridLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutOther"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/selection"
+                        android:textStyle="bold"
+                        android:textColor="?attr/settingsText"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerSelection"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:background="@drawable/spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>

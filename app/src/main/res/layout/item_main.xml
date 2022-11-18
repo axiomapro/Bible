@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/itemClick"
+        android:layout_rowWeight="1"
+        android:layout_width="4dp"
+        android:layout_height="0dp"/>
+
+    <LinearLayout
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="11dp"
+        android:paddingEnd="15dp"
+        android:orientation="vertical"
+        android:layout_columnWeight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/itemFavorite"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_favorite_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/itemText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="5dp"
+                android:text="Samson went down to Timnah and saw there a young Philistine woman."
+                android:textColor="?attr/mainItemText"
+                android:textSize="17sp" />
+
+        </GridLayout>
+
+        <GridLayout
+            android:id="@+id/itemFolder"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_folder_orange_active"
+                android:layout_marginEnd="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/itemFolderName"
+                android:text="@string/default_folder"
+                android:textColor="?attr/mainItemDefaultFolder"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+    </LinearLayout>
+
+</GridLayout>

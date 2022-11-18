@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="@integer/material_motion_duration_medium_1"
+    android:exitFadeDuration="@integer/material_motion_duration_medium_1">
+
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="?attr/favoriteItemPress"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <solid android:color="?attr/favoriteItem"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+
+</selector>
