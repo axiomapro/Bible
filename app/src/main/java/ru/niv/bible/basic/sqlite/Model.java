@@ -4,16 +4,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.Static;
 
 public class Model {
 
     private final DatabaseHelper databaseHelper;
     protected ContentValue cv;
+    protected Converter converter;
 
     public Model(Context context) {
         databaseHelper = DatabaseHelper.getInstance(context);
         cv = new ContentValue();
+        converter = new Converter();
     }
 
     protected int insertOrReplace(String table, ContentValues cv) {

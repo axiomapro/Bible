@@ -2,7 +2,7 @@ package ru.niv.bible.mvp.presenter;
 
 import java.util.List;
 
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.SearchContract;
 import ru.niv.bible.mvp.model.SearchModel;
 import ru.niv.bible.mvp.view.SearchFragment;

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutTop"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:text="Canonical"
+            android:textColor="?attr/readingPlanBottomItemTopName"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="7dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ru.niv.bible.basic.component.EnhancedWrapContentViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/textViewProgress"
+            android:text="0.0%"
+            android:textColor="?attr/readingPlanBottomItemTopProgress"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_columnWeight="1"
+                android:progressDrawable="@drawable/progressbar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progress="50"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonPlan"
+                android:text="@string/plan"
+                android:textColor="?attr/readingPlanBottomItemTopButtonText"
+                android:layout_columnWeight="1"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/selector_reading_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonStop"
+                android:text="@string/stop"
+                android:textColor="?attr/readingPlanBottomItemTopButtonText"
+                android:layout_columnWeight="1"
+                android:stateListAnimator="@null"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/selector_reading_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutBottom"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:text="Canonical"
+            android:textSize="17sp"
+            android:textColor="?attr/readingPlanBottomItemBottomName"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/textViewText"
+            android:text="Text"
+            android:textColor="?attr/readingPlanBottomItemBottomText"
+            android:lineSpacingExtra="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <GridLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonYear"
+                android:text="@string/one_year"
+                android:textColor="?attr/readingPlanBottomItemBottomButtonText"
+                android:textSize="17sp"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:padding="15dp"
+                android:layout_columnWeight="1"
+                android:background="@drawable/selector_reading_plan_period"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonHalfYear"
+                android:text="@string/half_year"
+                android:textColor="?attr/readingPlanBottomItemBottomButtonText"
+                android:textSize="17sp"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:padding="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_columnWeight="1"
+                android:background="@drawable/selector_reading_plan_period"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonQuarterYear"
+                android:text="@string/quarter_year"
+                android:textSize="17sp"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null"
+                android:padding="15dp"
+                android:layout_columnWeight="1"
+                android:background="@drawable/selector_reading_plan_period"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

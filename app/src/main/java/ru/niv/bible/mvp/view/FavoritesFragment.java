@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.FavoritesContract;
 import ru.niv.bible.mvp.presenter.FavoritesPresenter;
 

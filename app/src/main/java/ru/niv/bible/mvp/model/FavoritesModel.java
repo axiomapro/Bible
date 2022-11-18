@@ -8,7 +8,7 @@ import java.util.List;
 
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.basic.sqlite.Model;
 
 public class FavoritesModel extends Model {
@@ -48,22 +48,22 @@ public class FavoritesModel extends Model {
     public void add(String name,Action listener) {
         if (duplicate(Static.tableFolder,"name = ?",new String[]{name},true)) listener.onDuplicate();
         else {
-            int id = insertOrReplace(Static.folder,cv.addFolder(name));
+            int id = insertOrReplace(Static.tableFolder,cv.addFolder(name));
             int position = total(Static.tableFolder,"name between(select min(name) from folder where del = 0) and '"+name+"' and del = 0 order by name asc",false);
             listener.onSuccess(id,position);
         }
     }
 
     public void edit(String name,int id,Action listener) {
-        if (duplicate(Static.folder,"name = ? and id != ?",new String[]{name, String.valueOf(id)},true)) listener.onDuplicate();
+        if (duplicate(Static.tableFolder,"name = ? and id != ?",new String[]{name, String.valueOf(id)},true)) listener.onDuplicate();
         else {
-            setById(Static.folder,cv.editFolder(name),id);
+            setById(Static.tableFolder,cv.editFolder(name),id);
             listener.onSuccess(0,0);
         }
     }
 
     public void delete(int id) {
-        setById(Static.folder,cv.delete(),id);
+        setById(Static.tableFolder,cv.delete(),id);
         set(Static.tableFavorite,cv.delete(),"folder = "+id);
     }
 

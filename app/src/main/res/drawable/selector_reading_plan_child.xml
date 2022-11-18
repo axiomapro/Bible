@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="@integer/material_motion_duration_medium_1"
+    android:exitFadeDuration="@integer/material_motion_duration_medium_1">
+
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="?attr/readingPlanBottomChildItemPress"/>
+            <corners android:radius="5dp"/>
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <solid android:color="?attr/readingPlanBottomChildItem"/>
+            <corners android:radius="5dp"/>
+        </shape>
+    </item>
+
+</selector>

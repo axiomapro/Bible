@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import ru.niv.bible.MainActivity;
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.ViewPagerAdapter;
+import ru.niv.bible.basic.list.adapter.ViewPagerAdapter;
 import ru.niv.bible.basic.component.Param;
 import ru.niv.bible.basic.component.Static;
 import ru.niv.bible.mvp.contract.MainContract;
@@ -40,6 +42,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
     private TextView tvChapter, tvPage;
     private String screen;
     private int maxPosition, audioPositionFragment, previousPosition, currentPosition;
+    private boolean arguments, isCheckedArguments;
 
     public static MainFragment newInstance(int chapter, int page, int item) {
         MainFragment fragment = new MainFragment();
@@ -97,6 +100,23 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
         handler = new Handler(hc);
     }
 
+    private void setParams() {
+        if (!isCheckedArguments) {
+            isCheckedArguments = true;
+            arguments = getArguments() != null;
+        }
+        Static.font = param.getInt(Static.paramFont);
+        Static.fontSize = param.getInt(Static.paramFontSize);
+        Static.lineSpacing = param.getInt(Static.paramLineSpacing);
+        Static.selection = param.getInt(Static.paramSelection);
+        screen = Static.screen;
+        maxPosition = param.getInt(Static.paramMaxPosition);
+        if (getArguments() != null) {
+            tvChapter.setText(presenter.getChapterName(getArguments().getInt("chapter")));
+            tvPage.setText(String.valueOf(getArguments().getInt("page")));
+        }
+    }
+
     private void initViewPager() {
         adapter = new ViewPagerAdapter(getParentFragmentManager(),0,Static.main,maxPosition);
         viewPager.setAdapter(adapter);
@@ -113,7 +133,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
             @Override
             public void onPageSelected(int position) {
                 param.setInt(Static.paramPosition,position);
-                presenter.updateChapterAndPage(position + 1);
+                updateChapterAndPage(position);
                 currentPosition = position;
                 handler.sendEmptyMessageDelayed(1,1000);
             }
@@ -123,12 +143,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
 
             }
         });
+
+        new Handler().postDelayed(() -> {
+            adapter.notifyDataSetChanged();
+            loading(false);
+        },100);
     }
 
     private void setCurrentItem() {
         int currentPosition;
-        boolean arguments = getArguments() != null;
-
         if (arguments) {
             int chapter = getArguments().getInt("chapter");
             int page = getArguments().getInt("page");
@@ -136,21 +159,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
             param.setInt(Static.paramPosition,currentPosition);
         } else currentPosition = param.getInt(Static.paramPosition);
 
-        if (currentPosition == 0) presenter.updateChapterAndPage(1);
+        if (currentPosition == 0) updateChapterAndPage(0);
         if (screen.equals(Static.main) && !arguments || screen.equals(Static.feedback)) viewPager.setCurrentItem(currentPosition);
         else {
-            loading(true);
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                viewPager.setAdapter(adapter);
-                viewPager.setCurrentItem(currentPosition);
-                if (arguments) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        loading(false);
-                        int item = getArguments().getInt("item");
-                        getMainChild(getPosition()).toPositionWithDelay(item - 1);
-                    },500);
-                } else loading(false);
-            },200);
+            viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(currentPosition);
+
+            if (arguments) {
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    arguments = false;
+                    getMainChild(getPosition()).toPositionWithDelay(getArguments().getInt("item"));
+                },200);
+            } else loading(true);
         }
     }
 
@@ -164,26 +184,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
         }
     }
 
-    private void setParams() {
-        Static.font = param.getInt(Static.paramFont);
-        Static.fontSize = param.getInt(Static.paramFontSize);
-        Static.lineSpacing = param.getInt(Static.paramLineSpacing);
-        Static.readingSpeed = param.getInt(Static.paramReadingSpeed);
-        Static.speechPitch = param.getInt(Static.paramSpeechPitch);
-        Static.languageAudio = param.getInt(Static.paramLanguage);
-        Static.selection = param.getInt(Static.paramSelection);
-        screen = Static.screen;
-        maxPosition = param.getInt(Static.paramMaxPosition);
-        if (maxPosition == 0) {
-            maxPosition = presenter.getMaxPosition();
-            param.setInt(Static.paramMaxPosition,maxPosition);
-        }
-        if (getArguments() != null) {
-            tvChapter.setText(presenter.getChapterName(getArguments().getInt("chapter")));
-            tvPage.setText(String.valueOf(getArguments().getInt("page")));
-        }
-    }
-
     private void setClickListeners() {
         ivSearch.setOnClickListener(this);
         ivFavorites.setOnClickListener(this);
@@ -194,7 +194,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
     public void nextPosition() {
         if (viewPager.getCurrentItem() == maxPosition - 1) return;
         audioPositionFragment = viewPager.getCurrentItem() + 1;
-        viewPager.setCurrentItem(audioPositionFragment);
+        viewPager.setCurrentItem(audioPositionFragment,true);
         new Handler(Looper.getMainLooper()).postDelayed(() -> getMainChild(getPosition()).startAudio(),1000);
     }
 
@@ -224,10 +224,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
                 .instantiateItem(viewPager, position);
     }
 
-    @Override
-    public void updateChapterAndPage(String chapter,int page) {
-        tvChapter.setText(chapter);
-        tvPage.setText(String.valueOf(page));
+    public void updateChapterAndPage(int position) {
+        JSONObject jsonObject = ((MainActivity) getActivity()).getJsonInfo(position);
+        try {
+            String name = jsonObject.getString("name");
+            int page = jsonObject.getInt("page");
+            tvChapter.setText(name);
+            tvPage.setText(String.valueOf(page));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

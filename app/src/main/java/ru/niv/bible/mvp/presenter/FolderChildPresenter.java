@@ -6,7 +6,7 @@ import java.util.List;
 
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Dialog;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.FolderChildContract;
 import ru.niv.bible.mvp.model.FolderChildModel;
 import ru.niv.bible.mvp.view.FolderChildFragment;

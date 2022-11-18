@@ -102,5 +102,37 @@
         <attr name="mainSidebarItemIcon" format="color"/>
         <attr name="mainSidebarItemName" format="color"/>
         <attr name="mainSidebarItemNameDivider" format="color"/>
+
+        <attr name="mainProgressBar" format="color"/>
+        <attr name="mainHead" format="color"/>
+        <attr name="commonNotesItem" format="color"/>
+        <attr name="commonNotesItemPress" format="color"/>
+        <attr name="commonNotesItemName" format="color"/>
+        <attr name="commonNotesItemDate" format="color"/>
+        <attr name="commonNotesGrid" format="color"/>
+        <attr name="commonNotesGridPress" format="color"/>
+        <attr name="commonNotesGridName" format="color"/>
+        <attr name="commonNotesGridText" format="color"/>
+        <attr name="readingPlanBottomItemTopName" format="color"/>
+        <attr name="readingPlanBottomItemTopDate" format="color"/>
+        <attr name="readingPlanBottomItemTopProgress" format="color"/>
+        <attr name="readingPlanBottomItemTopProgressBar" format="color"/>
+        <attr name="readingPlanBottomItemTopProgressBarProcess" format="color"/>
+        <attr name="readingPlanBottomItemTopButton" format="color"/>
+        <attr name="readingPlanBottomItemTopButtonPress" format="color"/>
+        <attr name="readingPlanBottomItemTopButtonText" format="color"/>
+        <attr name="readingPlanBottomChildItem" format="color"/>
+        <attr name="readingPlanBottomChildItemPress" format="color"/>
+        <attr name="readingPlanBottomChildItemName" format="color"/>
+        <attr name="readingPlanBottomItemBottomName" format="color"/>
+        <attr name="readingPlanBottomItemBottomText" format="color"/>
+        <attr name="readingPlanBottomItemBottomButton" format="color"/>
+        <attr name="readingPlanBottomItemBottomButtonPress" format="color"/>
+        <attr name="readingPlanBottomItemBottomButtonText" format="color"/>
+        <attr name="readingPlanMaterial" format="color"/>
+        <attr name="readingPlanMaterialPress" format="color"/>
+        <attr name="readingPlanMaterialDate" format="color"/>
+        <attr name="readingPlanMaterialItemHeadName" format="color"/>
+        <attr name="readingPlanMaterialItemDivider" format="color"/>
     </declare-styleable>
 </resources>

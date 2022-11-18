@@ -9,13 +9,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,18 +24,20 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import ru.niv.bible.MainActivity;
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
-import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.Go;
 import ru.niv.bible.basic.component.Speech;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.MainChildContract;
 import ru.niv.bible.mvp.presenter.MainChildPresenter;
 
@@ -45,8 +47,6 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
 
     private MainChildPresenter presenter;
     private Go go;
-    private Speech speech;
-    private Converter converter;
     private PowerManager.WakeLock wakeLock;
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
@@ -75,11 +75,16 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
         position = getArguments().getInt("position");
         initViews(v);
         initClasses();
-        presenter.getInformation(position + 1, (name, chapter, page) -> {
-            chapterName = name;
-            chapterId = chapter;
-            chapterPage = page;
-        });
+
+        JSONObject jsonObject = ((MainActivity) getActivity()).getJsonInfo(position);
+        try {
+            chapterId = jsonObject.getInt("id");
+            chapterName = jsonObject.getString("name");
+            chapterPage = jsonObject.getInt("page");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         initRecyclerView();
         readButton(presenter.getStateReadButton(position));
         presenter.initBottomSheet(v);
@@ -101,7 +106,6 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
         PowerManager powerManager = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag");
         go = new Go(getContext());
-        converter = new Converter();
     }
 
     private void initRecyclerView() {
@@ -128,14 +132,12 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
                         listPrevious = getCloneList(adapter.getList());
                         presenter.visibleBottomSheet(true);
                         setPaddingNestedScrollView(presenter.getHeightBottomSheet());
-                        if (speech == null) {
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> initTextToSpeech(),300);
-                        }
                     }
                 }
 
                 adapter.getItem(position).setClick(!click);
                 adapter.notifyItemChanged(position);
+                updateNote();
 
                 if (isPlaying) stop();
             }
@@ -152,54 +154,10 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
         });
     }
 
-    private void initTextToSpeech() {
-        new Thread(() -> {
-            speech = new Speech();
-            speech.check("en",converter.getCountry(Static.languageAudio),getContext());
-            speech.setSpeed((float) (10 + Static.readingSpeed) / 10);
-            speech.setPitch((float) (10 + Static.speechPitch) / 10);
-
-            speech.getTextToSpeech().setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                @Override
-                public void onStart(String utteranceId) {
-                }
-
-                @Override
-                public void onDone(String utteranceId) {
-                    if (isStop) {
-                        isStop = false;
-                        return;
-                    }
-                    if (listAudio.size() > 0) listAudio.remove(0);
-
-                    if (listAudio.size() > 0) {
-                        audioPosition = listAudio.get(0);
-                        toPosition(audioPosition);
-                        speech.speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(),TextToSpeech.QUEUE_FLUSH);
-                    } else {
-                        audioPosition++;
-                        if (audioPosition < adapter.getItemCount()) {
-                            getActivity().runOnUiThread(() -> toPosition(audioPosition));
-                            speech.speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(),TextToSpeech.QUEUE_FLUSH);
-                        } else {
-                            stop();
-                            getActivity().runOnUiThread(() -> ((MainActivity) getActivity()).getMainFragment().nextPosition());
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(String utteranceId) {
-                    stop();
-                }
-            });
-        }).start();
-    }
-
     private void readButton(boolean status) {
         llRead.setSelected(status);
         ivRead.setVisibility(status?View.GONE:View.VISIBLE);
-        tvRead.setTextColor(status? Color.parseColor("#E0714E"):Color.WHITE);
+        tvRead.setTextColor(status? Color.parseColor("#756A8E"):Color.WHITE);
     }
 
     private void setClickListeners() {
@@ -209,6 +167,38 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
     /*
         Audio
     */
+
+    public void onDone() {
+        if (isStop) {
+            isStop = false;
+            return;
+        }
+        if (listAudio.size() > 0) listAudio.remove(0);
+
+        if (listAudio.size() > 0) {
+            audioPosition = listAudio.get(0);
+            toPosition(audioPosition);
+            getSpeech().speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(), TextToSpeech.QUEUE_FLUSH);
+        } else {
+            audioPosition++;
+            if (audioPosition < adapter.getItemCount()) {
+                if (adapter.getItem(audioPosition).isHead()) {
+                    audioPosition++; // пропускаем
+                    if (audioPosition >= adapter.getItemCount()) { // последним был заголовок
+                        stop();
+                        getActivity().runOnUiThread(() -> ((MainActivity) getActivity()).getMainFragment().nextPosition());
+                        return;
+                    }
+                }
+
+                getActivity().runOnUiThread(() -> toPosition(audioPosition));
+                getSpeech().speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(),TextToSpeech.QUEUE_FLUSH);
+            } else {
+                stop();
+                getActivity().runOnUiThread(() -> ((MainActivity) getActivity()).getMainFragment().nextPosition());
+            }
+        }
+    }
 
     private void playAudio() {
         for (int i = 0; i < adapter.getItemCount(); i++) {
@@ -220,22 +210,23 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
         isPlaying = true;
         audioPosition = listAudio.get(0);
         toPosition(audioPosition);
-        speech.speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(), TextToSpeech.QUEUE_FLUSH);
+        getSpeech().speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(), TextToSpeech.QUEUE_FLUSH);
         wakeLock.acquire();
     }
 
+    // From main
     public void startAudio() {
         isStop = false;
         isPlaying = true;
         audioPosition = 0;
+        if (adapter.getItem(audioPosition).isHead()) audioPosition++;
         toPosition(audioPosition);
         presenter.showAudio();
         wakeLock.acquire();
         listPrevious = getCloneList(adapter.getList());
         setPaddingNestedScrollView(presenter.getHeightBottomSheet());
 
-        if (speech == null) initTextToSpeech();
-        new Handler(Looper.getMainLooper()).postDelayed(() -> speech.speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(),TextToSpeech.QUEUE_FLUSH),500);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> getSpeech().speak(adapter.getItem(audioPosition).getText().replaceAll("^\\d+","").trim(),TextToSpeech.QUEUE_FLUSH),500);
     }
 
     public void stop() {
@@ -244,15 +235,31 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
             isPlaying = false;
             isStop = true;
             listAudio.clear();
-            speech.stop();
+            getSpeech().stop();
             if (wakeLock.isHeld()) wakeLock.release();
             getActivity().runOnUiThread(this::hideBottomSheet);
         }
     }
 
+    private Speech getSpeech() {
+        return ((MainActivity) getActivity()).getSpeech();
+    }
+
     /*
         List
     */
+
+    private void updateNote() {
+        String note = null;
+        for (int i = adapter.getItemCount() - 1; i >= 0; i--) {
+            Item item = adapter.getItem(i);
+            if (item.isClick() && item.getNote() != null && item.getNote().length() > 0) {
+                note = adapter.getItem(i).getNote();
+                break;
+            }
+        }
+        presenter.setNote(note);
+    }
 
     private void redraw(List<Item> list) {
         adapter.getList().clear();
@@ -270,16 +277,18 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
         for (int i = 0; i < adapter.getItemCount(); i++) {
             String prevFolderName = listPrevious.get(i).getFolderName();
             String folderName = adapter.getItem(i).getFolderName();
+
             if (prevFolderName != null && folderName == null) {
                 presenter.deleteFavorite(adapter.getItem(i).getId());
             }
-            if (prevFolderName == null && folderName != null) {
+            if (prevFolderName == null && folderName != null || prevFolderName != null && folderName != null) {
                 int folder = adapter.getItem(i).getFolder();
                 int textId = adapter.getItem(i).getId();
                 int favorite = adapter.getItem(i).isFavorite()?1:0;
                 int underline = adapter.getItem(i).isUnderline()?1:0;
                 int color = adapter.getItem(i).getColor();
-                presenter.setFavorite(folder,textId,favorite,underline,color);
+                String note = adapter.getItem(i).getNote();
+                presenter.setFavorite(folder,textId,note,favorite,underline,color);
             }
         }
         listPrevious = getCloneList(adapter.getList());
@@ -303,13 +312,15 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
 
     public void toPositionWithDelay(int position) {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (recyclerView == null || recyclerView.getChildAt(position) == null) return;;
-            final float y = recyclerView.getChildAt(position).getY();
+            if (presenter == null) return;
+            int correctPosition = presenter.getCorrectPosition(chapterId,chapterPage,position);
+            if (recyclerView == null || recyclerView.getChildAt(correctPosition) == null) return;;
+            final float y = recyclerView.getChildAt(correctPosition).getY();
             nestedScrollView.post(() -> {
                 nestedScrollView.fling(0);
                 nestedScrollView.smoothScrollTo(0, (int) y);
             });
-        },1000);
+        },100);
     }
 
     public int getItemPosition() {
@@ -348,7 +359,7 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
     private List<Item> getCloneList(List<Item> list) {
         ArrayList<Item> result = new ArrayList<>();
         for (Item s : list) {
-            Item item = new Item().main(s.getId(), s.getText(), s.getFolderName(), s.getFolder(), s.isFavorite(), s.isUnderline(), s.getColor(), s.isClick());
+            Item item = new Item().main(s.getId(), s.getText(), s.getNote(), s.getFolderName(), s.getFolder(), s.isFavorite(), s.isUnderline(), s.getColor(), s.isHead(), s.isClick());
             result.add(item);
         }
         return result;
@@ -386,7 +397,7 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
     }
 
     @Override
-    public void onSetItem(String folderName, String type, int folder, int value) {
+    public void onSetItem(String folderName, String type, String note, int folder, int value) {
         if (totalClick == 0) return;
 
         boolean foundFist = false;
@@ -400,6 +411,7 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
                 if (type.equals("clear")) {
                     adapter.getItem(i).setFolderName(null);
                     adapter.getItem(i).setFolder(0);
+                    adapter.getItem(i).setNote(null);
                     adapter.getItem(i).setFavorite(false);
                     adapter.getItem(i).setUnderline(false);
                     adapter.getItem(i).setColor(0);
@@ -407,17 +419,30 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
                 if (type.equals("favorite")) {
                     adapter.getItem(i).setFolderName(folderName);
                     adapter.getItem(i).setFolder(folder);
+                    adapter.getItem(i).setNote(note);
                     adapter.getItem(i).setFavorite(value == 1);
                 }
                 if (type.equals("underline")) {
                     adapter.getItem(i).setFolderName(folderName);
                     adapter.getItem(i).setFolder(folder);
+                    adapter.getItem(i).setNote(note);
                     adapter.getItem(i).setUnderline(value == 1);
                 }
                 if (type.equals("color")) {
                     adapter.getItem(i).setFolderName(folderName);
                     adapter.getItem(i).setFolder(folder);
+                    adapter.getItem(i).setNote(note);
                     adapter.getItem(i).setColor(value);
+                }
+                if (type.equals("save-note")) {
+                    if (!adapter.getItem(i).isFavorite() && !adapter.getItem(i).isUnderline() && adapter.getItem(i).getColor() == 0 && note.length() == 0) {
+                        adapter.getItem(i).setFolderName(null);
+                        adapter.getItem(i).setFolder(0);
+                    } else {
+                        adapter.getItem(i).setFolderName(folderName);
+                        adapter.getItem(i).setFolder(folder);
+                    }
+                    adapter.getItem(i).setNote(note);
                 }
             }
         }
@@ -435,7 +460,7 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
             hideBottomSheet();
         }
         else if (type.equals("settings")) {
-            if (isPlaying) speech.stop();
+            if (isPlaying) getSpeech().stop();
             setPaddingNestedScrollView(0);
             getParentFragmentManager().beginTransaction().replace(R.id.container,new SettingsFragment(),Static.settings).addToBackStack(Static.settings).commit();
         }
@@ -475,6 +500,6 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (speech != null) speech.destroy();
+        if (getSpeech() != null) getSpeech().stop();
     }
 }

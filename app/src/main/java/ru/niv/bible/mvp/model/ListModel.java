@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.basic.sqlite.Model;
 
 public class ListModel extends Model {

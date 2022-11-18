@@ -53,29 +53,58 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <GridLayout
-            android:id="@+id/itemFolder"
-            android:visibility="gone"
-            android:layout_marginTop="10dp"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:src="@drawable/ic_folder_orange_active"
-                android:layout_marginEnd="5dp"
+            <GridLayout
+                android:id="@+id/itemFolder"
+                android:layout_marginEnd="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
 
-            <TextView
-                android:id="@+id/itemFolderName"
-                android:text="@string/default_folder"
-                android:textColor="?attr/folderDefaultFolder"
-                android:layout_gravity="center_vertical"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_folder_orange" />
+
+                <TextView
+                    android:id="@+id/itemFolderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/default_folder"
+                    android:textColor="?attr/mainItemDefaultFolder" />
+
+            </GridLayout>
+
+            <GridLayout
+                android:id="@+id/itemNote"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
 
-        </GridLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_note_orange" />
 
+                <TextView
+                    android:id="@+id/itemNoteText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="?attr/mainItemDefaultFolder" />
+
+            </GridLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
 

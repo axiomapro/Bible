@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.FolderChildContract;
 import ru.niv.bible.mvp.presenter.FolderChildPresenter;
 
@@ -63,6 +63,7 @@ public class FolderChildFragment extends Fragment implements FolderChildContract
         adapter.setListener(new RecyclerViewAdapter.Click() {
             @Override
             public void onClick(int position) {
+                ((FolderFragment) getParentFragmentManager().findFragmentByTag(Static.folder)).closeKeyboard();
                 getParentFragmentManager().beginTransaction().replace(R.id.container,MainFragment.newInstance(adapter.getItem(position).getChapter(),adapter.getItem(position).getPage(),adapter.getItem(position).getPosition()),Static.main).addToBackStack(Static.main).commit();
             }
 

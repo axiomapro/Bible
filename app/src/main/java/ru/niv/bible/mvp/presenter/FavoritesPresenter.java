@@ -10,7 +10,7 @@ import java.util.List;
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.Dialog;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.FavoritesContract;
 import ru.niv.bible.mvp.model.FavoritesModel;
 import ru.niv.bible.mvp.view.FavoritesFragment;
@@ -41,7 +41,7 @@ public class FavoritesPresenter implements FavoritesContract.Presenter {
         dialog.folder(statusAdd,name, new Dialog.Folder() {
             @Override
             public void onResult(String name, AlertDialog dialog, Dialog.Message listener) {
-                String correctName = converter.getNameFirstCap(name);
+                String correctName = converter.getNameUppercase(name);
                 if (TextUtils.isEmpty(correctName)) listener.onMessage(context.getString(R.string.write_the_name));
                 else if (correctName.equals(context.getString(R.string.default_folder))) listener.onMessage(context.getString(R.string.name_is_not_available));
                 else {

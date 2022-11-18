@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import ru.niv.bible.MainActivity;
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.Param;
@@ -33,7 +34,6 @@ import ru.niv.bible.basic.component.Static;
 public class SettingsFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private Param param;
-    private Speech speech;
     private Converter converter;
     private GridLayout glFont, glAudio, glOther;
     private LinearLayout llFont, llAudio, llOther;
@@ -81,13 +81,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         spinnerSelection = v.findViewById(R.id.spinnerSelection);
         ivBack = v.findViewById(R.id.imageViewBack);
         exampleText = getString(R.string.settings_text);
-        tvExample.setText(Html.fromHtml(exampleText.replaceAll("\\n","<br>").replaceAll("\\d+","<font color=\"#E0714E\">$0</font>")));
+        tvExample.setText(Html.fromHtml(exampleText.replaceAll("\\n","<br>").replaceAll("\\d+","<font color=\"#61567A\">$0</font>")));
     }
 
     private void initClasses() {
         param = new Param(getContext());
         converter = new Converter();
-        speech = new Speech();
     }
 
     private void setClickListeners() {
@@ -124,8 +123,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                param.setInt(Static.paramLanguage,position+1);
-                speech.setLanguage("en",converter.getCountry(position+1));
+                int voiceLanguage = position + 1;
+                param.setInt(Static.paramLanguage,voiceLanguage);
+                getSpeech().setLanguage(voiceLanguage == 4?"es":"en",converter.getCountry(voiceLanguage));
                 audio(false);
             }
 
@@ -166,7 +166,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         spinnerSelection.setSelection(selection - 1,false);
         tvFontSize.setText(String.valueOf(Static.defaultFontSize + fontSize));
         tvLineSpacing.setText(String.valueOf(3 + lineSpacing));
-        tvReadingSpeed.setText(String.valueOf((float) (10 + readingSpeed) / 10));
+        tvReadingSpeed.setText(String.valueOf((float) (1 + readingSpeed) / 10));
         tvSpeechPitch.setText(String.valueOf((float) (10 + speechPitch) / 10));
         tvExample.setTextSize(Static.defaultFontSize + fontSize);
         tvExample.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3+lineSpacing,  getResources().getDisplayMetrics()), 1.0f);
@@ -175,25 +175,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         seekBarLineSpacing.setProgress(lineSpacing);
         seekBarReadingSpeed.setProgress(readingSpeed);
         seekBarSpeechPitch.setProgress(speechPitch);
-
-        speech.check("en",converter.getCountry(language),getContext());
-        speech.setSpeed((float) (10 + param.getInt(Static.paramReadingSpeed)) / 10);
-        speech.setPitch((float) (10 + param.getInt(Static.paramSpeechPitch)) / 10);
-        speech.getTextToSpeech().setOnUtteranceProgressListener(new UtteranceProgressListener() {
-            @Override
-            public void onDone(String utteranceId) {
-                audio(false);
-            }
-
-            @Override
-            public void onError(String utteranceId) {
-                audio(false);
-            }
-
-            @Override
-            public void onStart(String utteranceId) {
-            }
-        });
     }
 
     private void toggle(int block) {
@@ -217,13 +198,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private void audio(boolean status) {
+    public void audio(boolean status) {
         isPlaying = status;
         if (status) {
-            speech.speak(exampleText.replaceAll("\\d+",""), TextToSpeech.QUEUE_FLUSH);
+            getSpeech().speak(exampleText.replaceAll("\\d+",""), TextToSpeech.QUEUE_FLUSH);
             fab.setImageResource(R.drawable.ic_pause);
         } else {
-            speech.stop();
+            getSpeech().stop();
             fab.setImageResource(R.drawable.ic_play);
         }
     }
@@ -237,6 +218,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         if (font == 6) result = "fonts/sitka.ttf";
         if (font == 7) result = "fonts/poppins.ttf";
         return result;
+    }
+
+    private Speech getSpeech() {
+        return ((MainActivity) getActivity()).getSpeech();
     }
 
     @Override
@@ -274,7 +259,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                 tvLineSpacing.setText(String.valueOf(lineSpacing));
                 break;
             case "readingSpeed":
-                float readingSpeed = (float) (10 + progress) / 10;
+                float readingSpeed = (float) (1 + progress) / 10;
                 tvReadingSpeed.setText(String.valueOf(readingSpeed));
                 if (isPlaying) audio(false);
                 break;
@@ -301,21 +286,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                 param.setInt(Static.paramLineSpacing,seekBar.getProgress());
                 break;
             case "readingSpeed":
-                float readingSpeed = (float) (10 + seekBar.getProgress()) / 10;
+                float readingSpeed = (float) (1 + seekBar.getProgress()) / 10;
                 param.setInt(Static.paramReadingSpeed,seekBar.getProgress());
-                speech.setSpeed(readingSpeed);
+                getSpeech().setSpeed(readingSpeed);
                 break;
             case "speechPitch":
                 float speechPitch = (float) (10 + seekBar.getProgress()) / 10;
                 param.setInt(Static.paramSpeechPitch,seekBar.getProgress());
-                speech.setPitch(speechPitch);
+                getSpeech().setPitch(speechPitch);
                 break;
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        speech.destroy();
     }
 }

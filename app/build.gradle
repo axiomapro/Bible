@@ -3,13 +3,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33 // Заменить на 33 версию (Android 13)
 
     defaultConfig {
         applicationId "ru.niv.bible"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33 // Заменить на 33 версию (Android 13)
         versionCode 1
         versionName "1.0"
 
@@ -29,12 +28,13 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'com.android.support:design:30.0.3'
-    implementation 'com.google.android.gms:play-services-ads:20.4.0'
+    implementation 'com.android.support:design:33.0.3'
+    implementation 'com.google.android.gms:play-services-ads:21.2.0' // Новая версия admob
+    implementation 'com.thoughtbot:expandablerecyclerview:1.4'
+    implementation 'androidx.work:work-runtime:2.7.1' // Добавить новую зависимость чтобы поддерживался старый код на Android 12+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

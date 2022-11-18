@@ -4,13 +4,11 @@ public class Static {
 
     // нельзя трогать
     public static boolean lightTheme = true;
+    public static boolean supportHead = false;
     public static final int defaultFontSize = 15;
     public static int font = 1;
     public static int fontSize = 0;
     public static int lineSpacing = 0;
-    public static int readingSpeed = 10;
-    public static int speechPitch = 10;
-    public static int languageAudio = 1;
     public static int selection = 1;
     public static String screen = "Main";
     public static final String database = "database.db";
@@ -30,6 +28,13 @@ public class Static {
     public static final String content = "Content";
     public static final String settings = "Settings";
     public static final String search = "Search";
+    public static final String readingPlan = "Reading plan";
+    public static final String readingPlanDialog = "Reading plan dialog";
+    public static final String readingPlanChild = "Reading plan child";
+    public static final String readingPlanMaterial = "Reading plan material";
+    public static final String commonNotes = "Common notes";
+    public static final String commonNotesList = "Common notes list";
+    public static final String commonNotesGrid = "Common notes grid";
     public static final String shareApp = "Share app";
     public static final String dayNight = "Day/Night";
     // название таблиц из бд
@@ -39,6 +44,8 @@ public class Static {
     public static final String tableRead = "read";
     public static final String tableText = "text";
     public static final String tableFavorite = "favorite";
+    public static final String tablePlan = "plan";
+    public static final String tableReadingPlan = "reading_plan";
     // ключ / значение
     public static final String paramPosition = "position"; // main
     public static final String paramFontSize = "font-size";
@@ -51,5 +58,8 @@ public class Static {
     public static final String paramRate = "rate";
     public static final String paramVisit = "visit";
     public static final String paramTheme = "theme";
+    public static final String paramToggleView = "toggle-view"; // note list view
     public static final String paramMaxPosition = "max-position";
+    public static final String paramSupportHead = "support-head";
+    public static final String paramFirstLaunch = "first-launch";
 }

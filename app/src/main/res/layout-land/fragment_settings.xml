@@ -295,7 +295,7 @@
 
                             <TextView
                                 android:id="@+id/textViewReadingSpeed"
-                                android:text="1.0"
+                                android:text="0.1"
                                 android:textColor="?attr/settingsText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
@@ -304,7 +304,7 @@
 
                         <SeekBar
                             android:id="@+id/seekbarReadingSpeed"
-                            android:max="10"
+                            android:max="9"
                             android:tag="readingSpeed"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>

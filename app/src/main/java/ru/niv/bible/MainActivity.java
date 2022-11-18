@@ -2,17 +2,16 @@ package ru.niv.bible;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -23,49 +22,61 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.component.Converter;
+import ru.niv.bible.basic.component.JSON;
+import ru.niv.bible.basic.component.Speech;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Alarm;
 import ru.niv.bible.basic.component.Checker;
-import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.Dialog;
 import ru.niv.bible.basic.component.Go;
 import ru.niv.bible.basic.component.Param;
-import ru.niv.bible.basic.component.Speech;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.basic.sqlite.DatabaseHelper;
-import ru.niv.bible.basic.sqlite.Model;
+import ru.niv.bible.basic.sqlite.Upgrade;
+import ru.niv.bible.mvp.model.MainModel;
+import ru.niv.bible.mvp.view.CommonNotesFragment;
 import ru.niv.bible.mvp.view.ContentFragment;
 import ru.niv.bible.mvp.view.FavoritesFragment;
 import ru.niv.bible.mvp.view.FeedbackFragment;
 import ru.niv.bible.mvp.view.FolderFragment;
 import ru.niv.bible.mvp.view.ListFragment;
-import ru.niv.bible.mvp.view.MainChildFragment;
 import ru.niv.bible.mvp.view.MainFragment;
+import ru.niv.bible.mvp.view.ReadingPlanFragment;
 import ru.niv.bible.mvp.view.SearchFragment;
 import ru.niv.bible.mvp.view.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements Go.Message {
 
     private FragmentManager manager;
+    private Speech speech;
     private Handler handler;
     private AdView adView;
     private Checker checker;
+    private JSON json;
     private Go go;
     private Param param;
     private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
+    private String jsonPath;
     private boolean isAd;
 
     @Override
@@ -75,14 +86,8 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         setContentView(R.layout.activity_main);
         initViews();
         iniClasses();
-        setParams();
         checkDatabase();
         initSidebar();
-
-        if (checker.internet()) checkRateDialog();
-        // checkAlarm();
-        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
-        handler.sendEmptyMessageDelayed(1,15000);
         setClickListeners();
         MobileAds.initialize(this, initializationStatus -> {
         });
@@ -108,22 +113,76 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void iniClasses() {
+        Converter converter = new Converter();
         go = new Go(this);
+        json = new JSON();
         checker = new Checker(this);
         handler = new Handler(msg -> {
             if (msg.what == 1) checkLoadAd();
             return false;
+        });
+
+        int voiceLanguage = param.getInt(Static.paramLanguage);
+        speech = new Speech();
+        speech.check(voiceLanguage == 4?"es":"en",converter.getCountry(voiceLanguage),this);
+        speech.setSpeed((float) (1 + param.getInt(Static.paramReadingSpeed)) / 10);
+        speech.setPitch((float) (10 + param.getInt(Static.paramSpeechPitch)) / 10);
+
+        speech.getTextToSpeech().setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                if (Static.screen.equals(Static.main)) getMainFragment().getMainChild(getMainFragment().getPosition()).onDone();
+                else ((SettingsFragment) getSupportFragmentManager().findFragmentByTag(Static.settings)).audio(false);
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                if (Static.screen.equals(Static.main)) getMainFragment().getMainChild(getMainFragment().getPosition()).stop();
+                else ((SettingsFragment) getSupportFragmentManager().findFragmentByTag(Static.settings)).audio(false);
+            }
         });
     }
 
     private void setParams() {
         manager = getSupportFragmentManager();
         Static.screen = Static.main;
+
+        jsonPath = getFilesDir()+"/"+"book.json";
+        if (!param.getBoolean(Static.paramFirstLaunch)) {
+            MainModel model = new MainModel(this);
+            // maxPosition
+            int maxPosition = param.getInt(Static.paramMaxPosition);
+            if (maxPosition == 0) param.setInt(Static.paramMaxPosition,model.getMaxPosition());
+            // isSupportHead
+            param.setBoolean(Static.paramSupportHead,model.isSupportHead());
+            // create json
+            json.create(model.createJson(),jsonPath);
+            param.setBoolean(Static.paramFirstLaunch,true);
+        }
+        Static.supportHead = param.getBoolean(Static.paramSupportHead);
     }
 
     private void checkDatabase() {
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
         databaseHelper.checkExistDB(this);
+        databaseHelper.openDb();
+
+        if (databaseHelper.isUpgrade()) {
+            param.setBoolean(Static.paramFirstLaunch,false);
+            new Upgrade(this, databaseHelper, () -> launch()).execute();
+        }
+        else launch();
+    }
+
+    private void launch() {
+        if (checker.internet()) checkRateDialog();
+        setParams();
+        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
+        handler.sendEmptyMessageDelayed(1,15000);
     }
 
     private void setClickListeners() {
@@ -187,14 +246,29 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         param.setInt(Static.paramVisit,visit);
     }
 
+    public JSONObject getJsonInfo(int position) {
+        JSONObject result = null;
+        try {
+            JSONArray jsonArray = new JSONArray(json.get(jsonPath));
+            result = jsonArray.getJSONObject(position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public Speech getSpeech() {
+        return speech;
+    }
+
     public MainFragment getMainFragment() {
         return ((MainFragment) manager.findFragmentByTag(Static.main));
     }
 
     private void initSidebar() {
         List<Item> list = new ArrayList<>();
-        String[] items = {getString(R.string.favorites),getString(R.string.settings),getString(R.string.feedback),getString(R.string.menu_share_app),getString(R.string.menu_day_night)};
-        int[] icons = {R.drawable.ic_menu_favorites,R.drawable.ic_menu_settings,R.drawable.ic_menu_feedback,R.drawable.ic_share_sidebar,R.drawable.ic_menu_day};
+        String[] items = {getString(R.string.favorites),getString(R.string.reading_plan),getString(R.string.common_notes),getString(R.string.settings),getString(R.string.feedback),getString(R.string.menu_share_app),getString(R.string.menu_day_night)};
+        int[] icons = {R.drawable.ic_menu_favorites,R.drawable.ic_menu_reading_plan,R.drawable.ic_menu_common_notes,R.drawable.ic_menu_settings,R.drawable.ic_menu_feedback,R.drawable.ic_share_sidebar,R.drawable.ic_menu_day};
         for (int i = 0; i < items.length; i++) {
             list.add(new Item().sidebar(items[i],icons[i]));
         }
@@ -214,6 +288,12 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
                     switch (item) {
                         case Static.favorites:
                             fragment = new FavoritesFragment();
+                            break;
+                        case Static.readingPlan:
+                            fragment = new ReadingPlanFragment();
+                            break;
+                        case Static.commonNotes:
+                            fragment = new CommonNotesFragment();
                             break;
                         case Static.settings:
                             fragment = new SettingsFragment();
@@ -240,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
                     MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
                     mainFragment.getMainChild(mainFragment.getPosition()).stop();
                     if (item.equals(Static.feedback)) manager.beginTransaction().add(R.id.container,new FeedbackFragment(),Static.feedback).addToBackStack(Static.feedback).commit();
+                    else if (item.equals(Static.commonNotes)) manager.beginTransaction().add(R.id.container,new CommonNotesFragment(),Static.commonNotes).addToBackStack(Static.commonNotes).commit();
                     else manager.beginTransaction().replace(R.id.container,fragment,item).addToBackStack(item).commit();
                 },300);
             }
@@ -300,6 +381,13 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         else if (Static.screen.equals(Static.folder) && !((FolderFragment) manager.findFragmentByTag(Static.folder)).checkBackSearch()) return;
         else if (Static.screen.equals(Static.search) && !((SearchFragment) manager.findFragmentByTag(Static.search)).checkBackSelect()) return;
         else if (Static.screen.equals(Static.main) && !((MainFragment) manager.findFragmentByTag(Static.main)).getMainChild(((MainFragment) manager.findFragmentByTag(Static.main)).getPosition()).checkBack()) return;
+        else if (Static.screen.equals(Static.commonNotes) && !((CommonNotesFragment) manager.findFragmentByTag(Static.commonNotes)).checkBackSearch()) return;
         else super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (speech != null) speech.destroy();
     }
 }

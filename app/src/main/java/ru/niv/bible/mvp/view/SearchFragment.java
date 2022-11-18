@@ -34,10 +34,10 @@ import java.util.List;
 
 import ru.niv.bible.MainActivity;
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Go;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.SearchContract;
 import ru.niv.bible.mvp.presenter.SearchPresenter;
 
@@ -130,8 +130,10 @@ public class SearchFragment extends Fragment implements View.OnClickListener, Se
                     adapter.getItem(position).setCheckBox(isChecked);
                     adapter.notifyItemChanged(position);
                     tvSelected.setText(String.valueOf(totalCheckBox));
+                } else {
+                    closeKeyboard();
+                    getParentFragmentManager().beginTransaction().replace(R.id.container,MainFragment.newInstance(adapter.getItem(position).getChapter(),adapter.getItem(position).getPage(),adapter.getItem(position).getPosition()),Static.main).addToBackStack(Static.main).commit();
                 }
-                else getParentFragmentManager().beginTransaction().replace(R.id.container,MainFragment.newInstance(adapter.getItem(position).getChapter(),adapter.getItem(position).getPage(),adapter.getItem(position).getPosition()),Static.main).addToBackStack(Static.main).commit();
             }
 
             @Override
@@ -331,6 +333,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener, Se
         return etSearch.getText().toString().trim();
     }
 
+    private void closeKeyboard() {
+        InputMethodManager inputMethodManager =(InputMethodManager) etSearch.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+    }
+
     public boolean checkBackSelect() {
         boolean result = isSelect;
         if (isSelect) visibleSelectAll(false);
@@ -341,6 +348,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener, Se
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageViewBack:
+                closeKeyboard();
                 getParentFragmentManager().popBackStack();
                 break;
             case R.id.imageViewClear:

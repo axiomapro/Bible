@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -24,8 +22,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.util.List;
 
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.list.item.Item;
 
 public class Sheet implements View.OnClickListener {
 
@@ -34,19 +32,19 @@ public class Sheet implements View.OnClickListener {
     private RecyclerView recyclerViewFolder;
     private BottomSheetBehavior bottomSheet;
     private AppCompatButton buttonLeft;
-    private ImageView ivArrow, ivAdd;
+    private ImageView ivArrow, ivAdd, ivNote;
     private GridLayout glPreview, glAudio, glFolder, glAdd;
     private LinearLayout llMore;
     private TextView tvFolder, tvMessage;
-    private EditText etName;
+    private EditText etName, etNote;
     private View llBottomSheet;
     private List<Item> listFolder;
-    private String folderName;
-    private boolean isFolder, isAdd;
+    private String folderName, note;
+    private boolean isFolder, isAdd, isNote;
     private int folder;
 
     public interface BottomSheet {
-        void onSetItem(String folderName,String type,int folder,int value);
+        void onSetItem(String folderName,String type,String note,int folder,int value);
         void onAction(String type);
         void onScroll(int height);
         void onHidden();
@@ -61,6 +59,12 @@ public class Sheet implements View.OnClickListener {
         this.listFolder = listFolder;
     }
 
+    public void setNote(String note) {
+        this.note = note;
+        ivNote.setImageResource(note != null && note.length() > 0?R.drawable.ic_note_active:R.drawable.ic_note);
+        etNote.setText(note);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public void initViews(View v) {
         AppCompatButton buttonRight = v.findViewById(R.id.buttonRight);
@@ -68,6 +72,7 @@ public class Sheet implements View.OnClickListener {
         LinearLayout llAudio = v.findViewById(R.id.linearLayoutAudio);
         LinearLayout llShare = v.findViewById(R.id.linearLayoutShare);
         LinearLayout llEdit = v.findViewById(R.id.linearLayoutEdit);
+        LinearLayout llNote = v.findViewById(R.id.linearLayoutNote);
         LinearLayout llFavorite = v.findViewById(R.id.linearLayoutFavorite);
         LinearLayout llUnderline = v.findViewById(R.id.linearLayoutUnderline);
         LinearLayout llClear = v.findViewById(R.id.linearLayoutClear);
@@ -85,7 +90,9 @@ public class Sheet implements View.OnClickListener {
         LinearLayout llRoundTen = v.findViewById(R.id.linearLayoutRoundTen);
         LinearLayout llSend = v.findViewById(R.id.linearLayoutSend);
         ivAdd = v.findViewById(R.id.imageViewAdd);
+        ivNote = v.findViewById(R.id.imageViewNote);
         etName = v.findViewById(R.id.editTextName);
+        etNote = v.findViewById(R.id.editTextNote);
         tvMessage = v.findViewById(R.id.textViewMessage);
         tvFolder = v.findViewById(R.id.textViewFolder);
         buttonLeft = v.findViewById(R.id.buttonLeft);
@@ -131,6 +138,7 @@ public class Sheet implements View.OnClickListener {
         llRoundEight.setOnClickListener(this);
         llRoundNine.setOnClickListener(this);
         llRoundTen.setOnClickListener(this);
+        llNote.setOnClickListener(this);
         llFavorite.setOnClickListener(this);
         llUnderline.setOnClickListener(this);
         llClear.setOnClickListener(this);
@@ -176,6 +184,7 @@ public class Sheet implements View.OnClickListener {
             llMore.setVisibility(View.GONE);
             visibleFolder(false);
             visibleAdd(false,false);
+            visibleNote(false);
             buttonLeft.setVisibility(View.GONE);
             glPreview.setVisibility(View.VISIBLE);
         }
@@ -223,6 +232,11 @@ public class Sheet implements View.OnClickListener {
         }
     }
 
+    private void visibleNote(boolean status) {
+        isNote = status;
+        etNote.setVisibility(status?View.VISIBLE:View.GONE);
+    }
+
     public void visibleBottomSheet(boolean status) {
         bottomSheet.setState(status?BottomSheetBehavior.STATE_EXPANDED:BottomSheetBehavior.STATE_HIDDEN);
         if (!status) {
@@ -232,11 +246,16 @@ public class Sheet implements View.OnClickListener {
             glPreview.setVisibility(View.VISIBLE);
             visibleFolder(false);
             visibleAdd(false,true);
+            visibleNote(false);
         }
     }
 
     public int getHeightBottomSheet() {
         return llBottomSheet.getHeight();
+    }
+
+    private String getNote() {
+        return etNote.getText().toString().trim();
     }
 
     public void message(String message) {
@@ -284,6 +303,7 @@ public class Sheet implements View.OnClickListener {
                 listener.onAction("audio");
                 break;
             case R.id.buttonLeft:
+                listener.onSetItem(folderName,"save-note",getNote(),folder,0);
                 listener.onAction("save");
             case R.id.buttonRight:
                 listener.onAction("cancel");
@@ -298,43 +318,48 @@ public class Sheet implements View.OnClickListener {
                 visibleFolder(!isFolder);
                 break;
             case R.id.linearLayoutRoundOne:
-                listener.onSetItem(folderName,"color",folder,1);
+                listener.onSetItem(folderName,"color",getNote(),folder,1);
                 break;
             case R.id.linearLayoutRoundTwo:
-                listener.onSetItem(folderName,"color",folder,2);
+                listener.onSetItem(folderName,"color",getNote(),folder,2);
                 break;
             case R.id.linearLayoutRoundThree:
-                listener.onSetItem(folderName,"color",folder,3);
+                listener.onSetItem(folderName,"color",getNote(),folder,3);
                 break;
             case R.id.linearLayoutRoundFour:
-                listener.onSetItem(folderName,"color",folder,4);
+                listener.onSetItem(folderName,"color",getNote(),folder,4);
                 break;
             case R.id.linearLayoutRoundFive:
-                listener.onSetItem(folderName,"color",folder,5);
+                listener.onSetItem(folderName,"color",getNote(),folder,5);
                 break;
             case R.id.linearLayoutRoundSix:
-                listener.onSetItem(folderName,"color",folder,6);
+                listener.onSetItem(folderName,"color",getNote(),folder,6);
                 break;
             case R.id.linearLayoutRoundSeven:
-                listener.onSetItem(folderName,"color",folder,7);
+                listener.onSetItem(folderName,"color",getNote(),folder,7);
                 break;
             case R.id.linearLayoutRoundEight:
-                listener.onSetItem(folderName,"color",folder,8);
+                listener.onSetItem(folderName,"color",getNote(),folder,8);
                 break;
             case R.id.linearLayoutRoundNine:
-                listener.onSetItem(folderName,"color",folder,9);
+                listener.onSetItem(folderName,"color",getNote(),folder,9);
                 break;
             case R.id.linearLayoutRoundTen:
-                listener.onSetItem(folderName,"color",folder,10);
+                listener.onSetItem(folderName,"color",getNote(),folder,10);
+                break;
+            case R.id.linearLayoutNote:
+                visibleNote(!isNote);
                 break;
             case R.id.linearLayoutFavorite:
-                listener.onSetItem(folderName,"favorite",folder,1);
+                listener.onSetItem(folderName,"favorite",getNote(),folder,1);
                 break;
             case R.id.linearLayoutUnderline:
-                listener.onSetItem(folderName,"underline",folder,1);
+                listener.onSetItem(folderName,"underline",getNote(),folder,1);
                 break;
             case R.id.linearLayoutClear:
-                listener.onSetItem(folderName,"clear",folder,1);
+                etNote.getText().clear();
+                ivNote.setImageResource(R.drawable.ic_note);
+                listener.onSetItem(folderName,"clear",getNote(),folder,1);
                 break;
             case R.id.linearLayoutSend:
                 listener.onSend(etName.getText().toString().trim());

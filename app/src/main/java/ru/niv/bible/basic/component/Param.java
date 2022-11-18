@@ -43,6 +43,7 @@ public class Param {
         sPref = mContext.getSharedPreferences(FILENAME,Context.MODE_PRIVATE);
         int defValue = 0;
         if (type.equals(Static.paramFont) || type.equals(Static.paramLanguage)) defValue = 1;
+        if (type.equals(Static.paramReadingSpeed)) defValue = 6;
         return sPref.getInt(type, defValue);
     }
 

@@ -78,7 +78,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        app:backgroundTint="#E0714E"
+        app:backgroundTint="@color/purple_500"
         app:elevation="0dp"
         app:tint="#fff"
         android:src="@drawable/ic_folder_plus"

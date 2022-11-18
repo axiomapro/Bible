@@ -34,6 +34,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewClose"
+                    android:visibility="gone"
                     android:src="@drawable/ic_close_dialog_favorite"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"

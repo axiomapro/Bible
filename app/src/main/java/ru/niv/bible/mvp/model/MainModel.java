@@ -2,18 +2,51 @@ package ru.niv.bible.mvp.model;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import ru.niv.bible.basic.component.Static;
 import ru.niv.bible.basic.sqlite.Model;
 
 public class MainModel extends Model {
 
-    public interface Main {
-        void getCurrentState(String chapter,int page);
-    }
-
     public MainModel(Context context) {
         super(context);
+    }
+
+    public boolean isSupportHead() {
+        boolean result;
+        try {
+            total(Static.tableText,"head = 1",false);
+            result = true;
+        } catch (SQLiteException e) {
+            result = false;
+        }
+        return result;
+    }
+
+    public String createJson() {
+        JSONArray jsonArray = new JSONArray();
+        Cursor cursor = getBySql("select chapter as id,(select name from chapter where id = chapter) as name,page from text group by chapter, page",null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            int page = cursor.getInt(cursor.getColumnIndex("page"));
+            String name = cursor.getString(cursor.getColumnIndex("name"));
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("id",id);
+                jsonObject.put("name",name);
+                jsonObject.put("page",page);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            jsonArray.put(jsonObject);
+        }
+        cursor.close();
+        return jsonArray.toString();
     }
 
     public int getMaxPosition() {
@@ -43,22 +76,6 @@ public class MainModel extends Model {
         }
         cursor.close();
         return result;
-    }
-
-    public void getChapterAndPage(int position,Main listener) {
-        Cursor cursor = getBySql("select max(id) as id,chapter,page from (select id,chapter,page from text group by chapter, page limit "+position+")",null);
-        if (cursor.moveToFirst()) {
-            int chapter = cursor.getInt(cursor.getColumnIndex("chapter"));
-            int page = cursor.getInt(cursor.getColumnIndex("page"));
-
-            Cursor cursorChapter = get(Static.tableChapter,"name","id = "+chapter,false,null);
-            if (cursorChapter.moveToFirst()) {
-                String chapterName = cursorChapter.getString(cursorChapter.getColumnIndex("name"));
-                listener.getCurrentState(chapterName,page);
-            }
-            cursorChapter.close();
-        }
-        cursor.close();
     }
 
 }

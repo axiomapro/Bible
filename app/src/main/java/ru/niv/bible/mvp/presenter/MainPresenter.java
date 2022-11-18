@@ -50,20 +50,12 @@ public class MainPresenter implements MainContract.Presenter {
         });
     }
 
-    public int getMaxPosition() {
-        return model.getMaxPosition();
-    }
-
     public int getPositionByChapterAndPage(int chapter,int page) {
         return model.getPositionByChapterAndPage(chapter,page);
     }
 
     public String getChapterName(int chapter) {
         return model.getChapterName(chapter);
-    }
-
-    public void updateChapterAndPage(int position) {
-        model.getChapterAndPage(position, view::updateChapterAndPage);
     }
 
 }

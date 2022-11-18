@@ -9,10 +9,9 @@ import java.util.List;
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.Sheet;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.MainChildContract;
 import ru.niv.bible.mvp.model.MainChildModel;
-import ru.niv.bible.mvp.model.MainModel;
 import ru.niv.bible.mvp.view.MainChildFragment;
 
 public class MainChildPresenter implements MainChildContract.Presenter {
@@ -33,16 +32,16 @@ public class MainChildPresenter implements MainChildContract.Presenter {
         return model.getList(chapter,page);
     }
 
-    public void getInformation(int position, MainChildModel.MainChild listener) {
-        model.getInformation(position,listener);
+    public int getCorrectPosition(int chapter,int page,int position) {
+        return model.getCorrectPosition(chapter,page,position);
     }
 
     public void deleteFavorite(int textId) {
         model.deleteFavorite(textId);
     }
 
-    public void setFavorite(int folder,int textId,int favorite,int underline, int color) {
-        model.setFavorite(folder,textId,favorite,underline,color);
+    public void setFavorite(int folder,int textId,String note,int favorite,int underline, int color) {
+        model.setFavorite(folder,textId,note,favorite,underline,color);
     }
 
     public boolean getStateReadButton(int position) {
@@ -59,8 +58,8 @@ public class MainChildPresenter implements MainChildContract.Presenter {
         sheet.initViews(v);
         sheet.setListener(new Sheet.BottomSheet() {
             @Override
-            public void onSetItem(String folderName, String type, int folder, int value) {
-                view.onSetItem(folderName,type,folder,value);
+            public void onSetItem(String folderName, String type, String note, int folder, int value) {
+                view.onSetItem(folderName,type,note,folder,value);
             }
 
             @Override
@@ -80,7 +79,7 @@ public class MainChildPresenter implements MainChildContract.Presenter {
 
             @Override
             public void onSend(String name) {
-                String correctName = converter.getNameFirstCap(name);
+                String correctName = converter.getNameUppercase(name);
                 if (TextUtils.isEmpty(correctName)) sheet.message(v.getContext().getString(R.string.write_the_name));
                 else if (correctName.equals(context.getString(R.string.default_folder))) sheet.message(context.getString(R.string.name_is_not_available));
                 else {
@@ -111,6 +110,10 @@ public class MainChildPresenter implements MainChildContract.Presenter {
 
     public void visibleEdit(boolean status) {
         sheet.visibleEdit(status);
+    }
+
+    public void setNote(String note) {
+        sheet.setNote(note);
     }
 
     public int getHeightBottomSheet() {

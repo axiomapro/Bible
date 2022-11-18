@@ -2,18 +2,15 @@ package ru.niv.bible.mvp.model;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.basic.sqlite.Model;
 
 public class MainChildModel extends Model {
@@ -25,47 +22,32 @@ public class MainChildModel extends Model {
         void onSuccess(int id,int newPosition);
     }
 
-    public interface MainChild {
-        void getCurrentState(String chapterName,int chapter,int page);
-    }
-
     public MainChildModel(Context context) {
         super(context);
         this.context = context;
     }
 
-    public void getInformation(int position, MainChild listener) {
-        Cursor cursor = getBySql("select max(id) as id,chapter,page from (select id,chapter,page from text group by chapter, page limit "+position+")",null);
-        if (cursor.moveToFirst()) {
-            int chapter = cursor.getInt(cursor.getColumnIndex("chapter"));
-            int page = cursor.getInt(cursor.getColumnIndex("page"));
-
-            Cursor cursorChapter = get(Static.tableChapter,"name","id = "+chapter,false,null);
-            if (cursorChapter.moveToFirst()) {
-                String chapterName = cursorChapter.getString(cursorChapter.getColumnIndex("name"));
-                listener.getCurrentState(chapterName,chapter,page);
-            }
-            cursorChapter.close();
-        }
-        cursor.close();
-    }
-
     public List<Item> getList(int chapter,int page) {
-        int i = 1;
+        String columnHead = Static.supportHead?",head":"";
         List<Item> list = new ArrayList<>();
-        Cursor cursor = get(Static.tableText,"id,text","chapter = "+chapter+" and page = "+page,false,null);
+        Cursor cursor = get(Static.tableText,"id,text"+columnHead,"chapter = "+chapter+" and page = "+page,false,null);
         while (cursor.moveToNext()) {
+            String note = null;
             String folderName = null;
             int folder = 0;
             boolean favorite = false;
             boolean underline = false;
+            boolean head = false;
+            if (Static.supportHead) head = cursor.getInt(cursor.getColumnIndex("head")) == 1;
+
             int color = 0;
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
 
             if (total(Static.tableFavorite,"text_id = "+id,true) != 0) {
-                Cursor cursorFavorite = get(Static.tableFavorite,"folder,favorite,underline,color,(select name from folder where id = folder and del = 0) as folderName","text_id = "+id,true,null);
+                Cursor cursorFavorite = get(Static.tableFavorite,"folder,note,favorite,underline,color,(select name from folder where id = folder and del = 0) as folderName","text_id = "+id,true,null);
                 if (cursorFavorite.moveToFirst()) {
+                    note = cursorFavorite.getString(cursorFavorite.getColumnIndex("note"));
                     folderName = cursorFavorite.getString(cursorFavorite.getColumnIndex("folderName"));
                     folder = cursorFavorite.getInt(cursorFavorite.getColumnIndex("folder"));
                     favorite = cursorFavorite.getInt(cursorFavorite.getColumnIndex("favorite")) == 1;
@@ -76,8 +58,7 @@ public class MainChildModel extends Model {
                 }
                 cursorFavorite.close();
             }
-            list.add(new Item().main(id,i+" "+text,folderName,folder,favorite,underline,color,false));
-            i++;
+            list.add(new Item().main(id,text.replaceAll("(?i)<br */?>","\n").replaceAll("<(.*?)>",""),note,folderName,folder,favorite,underline,color,head,false));
         }
         cursor.close();
 
@@ -98,6 +79,14 @@ public class MainChildModel extends Model {
         return list;
     }
 
+    public int getCorrectPosition(int chapter,int page,int position) {
+        int result = 0;
+        Cursor cursor = getBySql("select count(1) as total from text where chapter = "+chapter+" and page = "+page+" and id between(select min(id) from text where chapter = "+chapter+" and page = "+page+") and (select id from text where chapter = "+chapter+" and page = "+page+" and position = "+position+")",null);
+        if (cursor.moveToFirst()) result = cursor.getInt(cursor.getColumnIndex("total")) - 1;
+        cursor.close();
+        return result;
+    }
+
     public void add(String name, Action listener) {
         if (duplicate(Static.tableFolder,"name = ?",new String[]{name},true)) listener.onDuplicate();
         else {
@@ -111,14 +100,14 @@ public class MainChildModel extends Model {
         set(Static.tableFavorite,cv.delete(),"text_id = "+textId);
     }
 
-    public void setFavorite(int folder,int textId, int favorite, int underline, int color) {
-        if (duplicate(Static.tableFavorite,"folder = "+folder+" and text_id = "+textId,null,true)) {
-            set(Static.tableFavorite,cv.editFavorite(folder,favorite,underline,color),"text_id = "+textId);
+    public void setFavorite(int folder,int textId, String note, int favorite, int underline, int color) {
+        if (duplicate(Static.tableFavorite,"text_id = "+textId,null,true)) {
+            set(Static.tableFavorite,cv.editFavorite(folder,note,favorite,underline,color),"text_id = "+textId);
         } else {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
             String formattedDate = formatter.format(date);
-            insertOrReplace(Static.tableFavorite,cv.addFavorite(folder,textId,favorite,underline,color,formattedDate));
+            insertOrReplace(Static.tableFavorite,cv.addFavorite(folder,textId,note,favorite,underline,color,formattedDate));
         }
     }
 

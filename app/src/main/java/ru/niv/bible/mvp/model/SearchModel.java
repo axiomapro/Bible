@@ -2,13 +2,12 @@ package ru.niv.bible.mvp.model;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.basic.sqlite.Model;
 
 public class SearchModel extends Model {
@@ -27,8 +26,9 @@ public class SearchModel extends Model {
         if (tab == 2) sortBy = " and ch.type = 1";
         if (tab == 3) sortBy = " and ch.type = 2";
 
+        String excludeHead = Static.supportHead?" and head != 1":"";
         List<Item> list = new ArrayList<>();
-        Cursor cursor = getBySql("select t.id,ch.name,t.chapter,t.page,t.position,t.text from text t inner join chapter ch on t.chapter = ch.id where t.text like ?"+sortBy+" order by t.id asc",arg);
+        Cursor cursor = getBySql("select t.id,ch.name,t.chapter,t.page,t.position,t.text from text t inner join chapter ch on t.chapter = ch.id where t.text like ?"+sortBy+excludeHead+" order by t.id asc",arg);
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndex("name"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
@@ -36,7 +36,7 @@ public class SearchModel extends Model {
             int chapter = cursor.getInt(cursor.getColumnIndex("chapter"));
             int page = cursor.getInt(cursor.getColumnIndex("page"));
             int position = cursor.getInt(cursor.getColumnIndex("position"));
-            list.add(new Item().search(id,name+" "+page+":"+position,text,chapter,page,position,false));
+            list.add(new Item().search(id,name+" "+page+":"+position,text.replaceAll("(?i)<br */?>","\n").replaceAll("<(.*?)>",""),chapter,page,position,false));
         }
         cursor.close();
         return list;

@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -21,10 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import ru.niv.bible.R;
-import ru.niv.bible.basic.adapter.RecyclerViewAdapter;
+import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Param;
 import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.item.Item;
+import ru.niv.bible.basic.list.item.Item;
 import ru.niv.bible.mvp.contract.ListContract;
 import ru.niv.bible.mvp.presenter.ListPresenter;
 
@@ -88,6 +90,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
         adapter.setListener(new RecyclerViewAdapter.Click() {
             @Override
             public void onClick(int position) {
+                closeKeyboard();
                 getParentFragmentManager().beginTransaction().replace(R.id.container,ContentFragment.newInstance(adapter.getItem(position).getId(),adapter.getItem(position).getName()),Static.content).addToBackStack(Static.content).commit();
             }
 
@@ -120,11 +123,8 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = etSearch.getText().toString().trim();
-                if (TextUtils.isEmpty(query)) {
-                    ivClear.setVisibility(View.INVISIBLE);
-                } else {
-                    ivClear.setVisibility(View.VISIBLE);
-                }
+                if (TextUtils.isEmpty(query)) ivClear.setVisibility(View.GONE);
+                else ivClear.setVisibility(View.VISIBLE);
                 adapter.getFilter().filter(query);
             }
 
@@ -170,9 +170,11 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
     private void toggleSearch() {
         if (isVisibleSearch) {
             isVisibleSearch = false;
+            etSearch.getText().clear();
             glTabs.setVisibility(View.VISIBLE);
             glSearch.setVisibility(View.GONE);
             ivSearch.setImageResource(R.drawable.ic_search);
+            closeKeyboard();
         } else {
             isVisibleSearch = true;
             glTabs.setVisibility(View.GONE);
@@ -181,12 +183,14 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
         }
     }
 
+    private void closeKeyboard() {
+        InputMethodManager inputMethodManager =(InputMethodManager) etSearch.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+    }
+
     public boolean checkBackSearch() {
         boolean result = isVisibleSearch;
-        if (isVisibleSearch) {
-            etSearch.getText().clear();
-            toggleSearch();
-        }
+        if (isVisibleSearch) toggleSearch();
         return !result;
     }
 
@@ -203,6 +207,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
                 tabClick(3);
                 break;
             case R.id.imageViewBack:
+                closeKeyboard();
                 getParentFragmentManager().popBackStack();
                 break;
             case R.id.imageViewSearch:
@@ -210,7 +215,6 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
                 break;
             case R.id.imageViewClear:
                 etSearch.getText().clear();
-                ivClear.setVisibility(View.INVISIBLE);
                 break;
         }
     }

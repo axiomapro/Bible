@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/mainBackground"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:paddingEnd="20dp"
+        android:background="@drawable/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageViewBack"
+                android:src="@drawable/ic_back"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:paddingStart="15dp"
+                android:layout_gravity="center_vertical"
+                android:minWidth="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </GridLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/textViewPeriod"
+        android:layout_below="@id/toolbar"
+        android:textColor="?attr/readingPlanMaterialDate"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@id/textViewPeriod"
+        android:clipToPadding="false"
+        android:paddingBottom="10dp"
+        android:overScrollMode="never"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>

@@ -31,25 +31,66 @@ public class ContentValue {
         return cv;
     }
 
-    public ContentValues addFavorite(int folder,int textId,int favorite,int underline,int color,String date) {
+    public ContentValues addFavorite(int folder,int textId,String note,int favorite,int underline,int color,String date) {
         cv.clear();
         cv.put("folder",folder);
         cv.put("text_id",textId);
         cv.put("favorite",favorite);
         cv.put("underline",underline);
-        cv.put("note",(String) null);
+        cv.put("note",note);
         cv.put("color",color);
         cv.put("date",date);
         cv.put("del",0);
         return cv;
     }
 
-    public ContentValues editFavorite(int folder,int favorite,int underline,int color) {
+    public ContentValues editFavorite(int folder, String note,int favorite,int underline,int color) {
         cv.clear();
         cv.put("folder",folder);
+        cv.put("note",note);
         cv.put("favorite",favorite);
         cv.put("underline",underline);
         cv.put("color",color);
+        return cv;
+    }
+
+    public ContentValues addNote(String name,String text,String date) {
+        cv.clear();
+        cv.put("name",name);
+        cv.put("text",text);
+        cv.put("date",date);
+        cv.put("del",0);
+        return cv;
+    }
+
+    public ContentValues editNote(String name,String text) {
+        cv.clear();
+        cv.put("name",name);
+        cv.put("text",text);
+        return cv;
+    }
+
+    public ContentValues readingPlanActive(int type,String start,String finish) {
+        cv.clear();
+        cv.put("type",type);
+        cv.put("start",start);
+        cv.put("finish",finish);
+        cv.put("status",1);
+        return cv;
+    }
+
+    public ContentValues readingPlanInactive() {
+        cv.clear();
+        cv.put("type",0);
+        cv.put("start",(String) null);
+        cv.put("finish",(String) null);
+        cv.put("status",0);
+        return cv;
+    }
+
+    public ContentValues status(int status) {
+        cv.clear();
+        cv.put("status",status);
         return cv;
     }
 

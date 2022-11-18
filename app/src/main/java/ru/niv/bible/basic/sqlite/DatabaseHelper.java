@@ -18,8 +18,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static SQLiteDatabase db;
     private static DatabaseHelper instance;
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2; // do not edit (17.11.21)
     private static boolean isOpenDb;
+    private boolean copiedActualDb, isUpgrade;
 
     public static synchronized DatabaseHelper getInstance(Context context) {
         if (instance == null) instance = new DatabaseHelper(context);
@@ -36,16 +37,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (copiedActualDb) return; // защита от обновления, когда ты только установил и версия базы данных больше единицы, то при установке срабатывает onUpgrade
+        isUpgrade = true;
     }
 
     public void checkExistDB(Context context) {
         File database = context.getDatabasePath(Static.database);
         if (!database.exists()) {
+            copiedActualDb = true;
             getWritableDatabase();
             close();
-            if (copyDatabase(context)) {
-                Log.d(Static.log, "checkExist: copied successfully");
-            }
+            copyDatabase(context);
         }
     }
 
@@ -93,6 +95,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public SQLiteDatabase getDb() {
         if (db == null) openDb();
         return db;
+    }
+
+    public boolean isUpgrade() {
+        return isUpgrade;
     }
 
 }

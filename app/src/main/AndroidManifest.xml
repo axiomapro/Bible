@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/> <!-- Добавить новое разрешение для показа рекламы на Android 13 -->
 
     <queries>
         <package android:name="com.google.android.gm" />
@@ -19,18 +20,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bible">
-        <activity android:name="ru.niv.bible.MainActivity" android:configChanges="orientation|screenSize|keyboardHidden">
-
-        </activity>
-        <activity android:name="ru.niv.bible.SplashActivity" android:configChanges="orientation|screenSize|keyboardHidden">
+        <!-- Новый параметр exported, он необходим для Android 13, только один имеет значение true, это экран заставки -->
+        <activity android:exported="false" android:name="ru.niv.bible.MainActivity" android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <!-- Новый параметр exported, он необходим для Android 13, только один имеет значение true, это экран заставки -->
+        <activity android:exported="true" android:name="ru.niv.bible.SplashActivity" android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver android:name=".basic.receiver.AlertReceiver">
+        <!-- Новый параметр exported, он необходим для Android 13, только один имеет значение true, это экран заставки -->
+        <receiver android:exported="false" android:name=".basic.receiver.AlertReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
