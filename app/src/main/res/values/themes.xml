@@ -14,12 +14,20 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Custom -->
         <item name="splashBackground">#FFFFFF</item>
-        <item name="splashTextGradientStart">#446C83</item>
-        <item name="splashTextGradientEnd">#64879A</item>
+        <item name="splashTextGradientStart">#625978</item>
+        <item name="splashTextGradientEnd">#574E6D</item>
 
         <item name="mainBackground">#FFFFFF</item>
-        <item name="mainToolbarGradientStart">#446C83</item>
-        <item name="mainToolbarGradientEnd">#64879A</item>
+        <item name="mainToolbarGradientStart">#FFFFFF</item>
+        <item name="mainToolbarGradientEnd">#FFFFFF</item>
+        <item name="mainToolbarIcon">@color/black</item>
+        <item name="mainToolbarTitle">@color/black</item>
+        <item name="mainToolbarSearchEditText">#11000000</item>
+        <item name="mainToolbarSearchEditTextHint">#888888</item>
+        <item name="mainToolbarSearchEditTextColor">@color/black</item>
+        <item name="mainPurple">#625978</item>
+        <item name="mainPurpleCenter">#F9F9F9</item>
+        <item name="mainPurpleCenterColor">#625978</item>
 
         <item name="feedbackTitle">@color/black</item>
         <item name="feedbackText">@color/black</item>
@@ -27,13 +35,13 @@
         <item name="feedbackName">@color/black</item>
         <item name="feedbackDescription">#90000000</item>
         <item name="feedbackIcon">@color/black</item>
-        <item name="feedbackPolicy">#5389A9</item>
+        <item name="feedbackPolicy">@color/purple_500</item>
 
         <item name="listItem">#F0F0F0</item>
         <item name="listItemPress">#E1E1E1</item>
         <item name="listItemName">@color/black</item>
 
-        <item name="contentTitle">#5389A9</item>
+        <item name="contentTitle">@color/purple_500</item>
         <item name="contentItemNumber">@color/black</item>
 
         <item name="favoriteItem">#F0F0F0</item>
@@ -56,8 +64,8 @@
 
         <item name="favoriteDialogEditTextColor">@color/black</item>
         <item name="favoriteDialogEditHintColor">#999</item>
-        <item name="favoriteDialogButtonLeft">#5389A9</item>
-        <item name="favoriteDialogButtonLeftPress">#4B7A97</item>
+        <item name="favoriteDialogButtonLeft">@color/purple_500</item>
+        <item name="favoriteDialogButtonLeftPress">#695F80</item>
         <item name="favoriteDialogButtonLeftColor">@color/white</item>
 
         <item name="favoriteDialogButtonRight">#EFEFEF</item>
@@ -71,9 +79,9 @@
         <item name="searchCheckBox">@color/purple_500</item>
 
         <item name="settingsTextExample">@color/black</item>
-        <item name="settingsFab">#5389A9</item>
+        <item name="settingsFab">@color/purple_500</item>
         <item name="settingsToggle">#EDEDED</item>
-        <item name="settingsToggleSelect">#19417A9C</item>
+        <item name="settingsToggleSelect">#19756A8E</item>
         <item name="settingsToggleName">@color/black</item>
         <item name="settingsToggleArrow">@color/black</item>
         <item name="settingsSpinner">#F1F1F1</item>
@@ -88,12 +96,13 @@
 
         <item name="mainItemText">@color/black</item>
         <item name="mainItemDefaultFolder">#999</item>
-        <item name="mainButtonRead">#5389A9</item>
-        <item name="mainButtonReadSelect">#265389A9</item>
+        <item name="mainButtonRead">#756A8E</item>
+        <item name="mainButtonReadSelect">#26756A8E</item>
         <item name="mainButtonReadText">@color/white</item>
-        <item name="mainButtonReadTextSelect">#5389A9</item>
+        <item name="mainButtonReadTextSelect">#756A8E</item>
         <item name="mainBottomSheet">@color/white</item>
-        <item name="mainBottomSheetIcon">@color/black</item>
+        <item name="mainBottomSheetRound">#F0F0F0</item>
+        <item name="mainBottomSheetIcon">#756A8E</item>
         <item name="mainBottomSheetRecyclerViewBorder">#F1F1F1</item>
         <item name="mainBottomSheetFolderName">@color/black</item>
         <item name="mainBottomSheetItemName">@color/black</item>
@@ -101,7 +110,7 @@
         <item name="mainBottomSheetButtonRight">#EFEFEF</item>
         <item name="mainBottomSheetButtonRightPress">#E8E8E8</item>
         <item name="mainBottomSheetButtonRightText">#545454</item>
-        <item name="mainBottomSheetDivider">#F6F6F6</item>
+        <item name="mainBottomSheetDivider">#F0F0F0</item>
 
         <item name="dialogShare">@color/white</item>
         <item name="dialogShareTitle">@color/black</item>
@@ -125,24 +134,28 @@
         <item name="commonNotesGridPress">#EAEAEA</item>
         <item name="commonNotesGridName">@color/black</item>
         <item name="commonNotesGridText">#80000000</item>
+
         <item name="readingPlanBottomItemTopName">@color/black</item>
         <item name="readingPlanBottomItemTopDate">#888</item>
         <item name="readingPlanBottomItemTopProgress">#888</item>
         <item name="readingPlanBottomItemTopProgressBar">#F9F9F9</item>
-        <item name="readingPlanBottomItemTopProgressBarProcess">#5389A9</item>
+        <item name="readingPlanBottomItemTopProgressBarProcess">@color/purple_500</item>
         <item name="readingPlanBottomItemTopButton">#26ADADAD</item>
         <item name="readingPlanBottomItemTopButtonPress">#40ADADAD</item>
         <item name="readingPlanBottomItemTopButtonText">@color/black</item>
         <item name="readingPlanBottomChildItem">#F9F9F9</item>
         <item name="readingPlanBottomChildItemPress">#EAEAEA</item>
         <item name="readingPlanBottomChildItemName">@color/black</item>
+        <item name="readingPlanBottomItem">@color/white</item>
+        <item name="readingPlanBottomItemBorder">#F6F6F6</item>
         <item name="readingPlanBottomItemBottomName">@color/black</item>
         <item name="readingPlanBottomItemBottomText">#80000000</item>
-        <item name="readingPlanBottomItemBottomButton">#19417A9C</item>
-        <item name="readingPlanBottomItemBottomButtonPress">#34417A9C</item>
+        <item name="readingPlanBottomItemBottomButton">#19756A8E</item>
+        <item name="readingPlanBottomItemBottomButtonPress">#34756A8E</item>
         <item name="readingPlanBottomItemBottomButtonText">@color/black</item>
+
         <item name="readingPlanMaterial">#F6F6F6</item>
-        <item name="readingPlanMaterialPress">#19417A9C</item>
+        <item name="readingPlanMaterialPress">#19756A8E</item>
         <item name="readingPlanMaterialDate">#80000000</item>
         <item name="readingPlanMaterialItemHeadName">@color/black</item>
         <item name="readingPlanMaterialItemDivider">#F9F9F9</item>
@@ -166,8 +179,16 @@
         <item name="splashTextGradientEnd">#444</item>
 
         <item name="mainBackground">#151515</item>
-        <item name="mainToolbarGradientStart">#4A5D67</item>
-        <item name="mainToolbarGradientEnd">#384860</item>
+        <item name="mainToolbarGradientStart">#151515</item>
+        <item name="mainToolbarGradientEnd">#151515</item>
+        <item name="mainToolbarIcon">@color/white</item>
+        <item name="mainToolbarTitle">@color/white</item>
+        <item name="mainToolbarSearchEditText">#65000000</item>
+        <item name="mainToolbarSearchEditTextHint">#B0B0B0</item>
+        <item name="mainToolbarSearchEditTextColor">@color/white</item>
+        <item name="mainPurple">@color/white</item>
+        <item name="mainPurpleCenter">#26ADADAD</item>
+        <item name="mainPurpleCenterColor">@color/white</item>
 
         <item name="feedbackTitle">@color/white</item>
         <item name="feedbackText">@color/white</item>
@@ -175,13 +196,13 @@
         <item name="feedbackName">@color/white</item>
         <item name="feedbackDescription">#80FFFFFF</item>
         <item name="feedbackIcon">@color/white</item>
-        <item name="feedbackPolicy">#5389A9</item>
+        <item name="feedbackPolicy">@color/purple_500</item>
 
         <item name="listItem">#252525</item>
         <item name="listItemPress">#202020</item>
         <item name="listItemName">@color/white</item>
 
-        <item name="contentTitle">#5389A9</item>
+        <item name="contentTitle">@color/purple_500</item>
         <item name="contentItemNumber">@color/white</item>
 
         <item name="favoriteItem">#1AADADAD</item>
@@ -204,8 +225,8 @@
 
         <item name="favoriteDialogEditTextColor">@color/white</item>
         <item name="favoriteDialogEditHintColor">#666</item>
-        <item name="favoriteDialogButtonLeft">#5389A9</item>
-        <item name="favoriteDialogButtonLeftPress">#4B7A97</item>
+        <item name="favoriteDialogButtonLeft">@color/purple_500</item>
+        <item name="favoriteDialogButtonLeftPress">@color/buttonPress</item>
         <item name="favoriteDialogButtonLeftColor">@color/white</item>
 
         <item name="favoriteDialogButtonRight">#26ADADAD</item>
@@ -219,7 +240,7 @@
         <item name="searchCheckBox">@color/purple_500</item>
 
         <item name="settingsTextExample">@color/white</item>
-        <item name="settingsFab">#5389A9</item>
+        <item name="settingsFab">@color/purple_500</item>
         <item name="settingsToggle">#26ADADAD</item>
         <item name="settingsToggleSelect">#1AADADAD</item>
         <item name="settingsToggleName">@color/white</item>
@@ -236,11 +257,12 @@
 
         <item name="mainItemText">@color/white</item>
         <item name="mainItemDefaultFolder">#80FFFFFF</item>
-        <item name="mainButtonRead">#5389A9</item>
-        <item name="mainButtonReadSelect">#265389A9</item>
+        <item name="mainButtonRead">#756A8E</item>
+        <item name="mainButtonReadSelect">#26756A8E</item>
         <item name="mainButtonReadText">@color/white</item>
-        <item name="mainButtonReadTextSelect">#5389A9</item>
+        <item name="mainButtonReadTextSelect">#756A8E</item>
         <item name="mainBottomSheet">#282828</item>
+        <item name="mainBottomSheetRound">#343434</item>
         <item name="mainBottomSheetIcon">@color/white</item>
         <item name="mainBottomSheetRecyclerViewBorder">#353535</item>
         <item name="mainBottomSheetFolderName">@color/white</item>
@@ -273,22 +295,26 @@
         <item name="commonNotesGridPress">#202020</item>
         <item name="commonNotesGridName">@color/white</item>
         <item name="commonNotesGridText">#888</item>
+
         <item name="readingPlanBottomItemTopName">@color/white</item>
         <item name="readingPlanBottomItemTopDate">#888</item>
         <item name="readingPlanBottomItemTopProgress">#777</item>
         <item name="readingPlanBottomItemTopProgressBar">#444</item>
-        <item name="readingPlanBottomItemTopProgressBarProcess">#5389A9</item>
+        <item name="readingPlanBottomItemTopProgressBarProcess">@color/purple_500</item>
         <item name="readingPlanBottomItemTopButton">#26ADADAD</item>
         <item name="readingPlanBottomItemTopButtonPress">#1AADADAD</item>
         <item name="readingPlanBottomItemTopButtonText">@color/white</item>
         <item name="readingPlanBottomChildItem">#252525</item>
         <item name="readingPlanBottomChildItemPress">#202020</item>
         <item name="readingPlanBottomChildItemName">@color/white</item>
+        <item name="readingPlanBottomItem">#1B1B1B</item>
+        <item name="readingPlanBottomItemBorder">#101010</item>
         <item name="readingPlanBottomItemBottomName">@color/white</item>
         <item name="readingPlanBottomItemBottomText">#888</item>
         <item name="readingPlanBottomItemBottomButton">#26ADADAD</item>
         <item name="readingPlanBottomItemBottomButtonPress">#1AADADAD</item>
         <item name="readingPlanBottomItemBottomButtonText">@color/white</item>
+
         <item name="readingPlanMaterial">#26ADADAD</item>
         <item name="readingPlanMaterialPress">#1AADADAD</item>
         <item name="readingPlanMaterialDate">#888</item>
@@ -302,8 +328,8 @@
     </style>
 
     <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
-        <item name="colorAccent">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorAccent">@color/purple_500</item>
+        <item name="android:textColorSecondary">?attr/mainToolbarTitle</item>
     </style>
 
     <style name="DialogAnimation" parent="android:Animation">

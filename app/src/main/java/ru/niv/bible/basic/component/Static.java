@@ -62,4 +62,5 @@ public class Static {
     public static final String paramMaxPosition = "max-position";
     public static final String paramSupportHead = "support-head";
     public static final String paramFirstLaunch = "first-launch";
+    public static final String paramPurchase = "purchase";
 }

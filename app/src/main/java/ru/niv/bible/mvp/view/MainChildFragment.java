@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -123,6 +122,7 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
                 if (totalClick == 0) {
                     isBottomSheet = false;
                     isEdit = false;
+                    nestedScrollView.setVerticalFadingEdgeEnabled(true);
                     presenter.visibleBottomSheet(false);
                     setPaddingNestedScrollView(0);
                 }
@@ -131,6 +131,7 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
                         isBottomSheet = true;
                         listPrevious = getCloneList(adapter.getList());
                         presenter.visibleBottomSheet(true);
+                        nestedScrollView.setVerticalFadingEdgeEnabled(false);
                         setPaddingNestedScrollView(presenter.getHeightBottomSheet());
                     }
                 }
@@ -451,16 +452,22 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
 
     @Override
     public void onAction(String type) {
-        if (type.equals("save")) saveChanges();
+        if (type.equals("save")) {
+            nestedScrollView.setVerticalFadingEdgeEnabled(true);
+            saveChanges();
+        }
         else if (type.equals("cancel")) {
+            nestedScrollView.setVerticalFadingEdgeEnabled(true);
             restorePreviousList();
         }
         else if (type.equals("stop")) {
+            nestedScrollView.setVerticalFadingEdgeEnabled(true);
             stop();
             hideBottomSheet();
         }
         else if (type.equals("settings")) {
             if (isPlaying) getSpeech().stop();
+            nestedScrollView.setVerticalFadingEdgeEnabled(true);
             setPaddingNestedScrollView(0);
             getParentFragmentManager().beginTransaction().replace(R.id.container,new SettingsFragment(),Static.settings).addToBackStack(Static.settings).commit();
         }
@@ -478,15 +485,18 @@ public class MainChildFragment extends Fragment implements MainChildContract.Vie
                 e.printStackTrace();
                 ((MainActivity) getActivity()).message(getString(R.string.app_could_not_copy_text));
             }
+            nestedScrollView.setVerticalFadingEdgeEnabled(true);
             hideBottomSheet();
         }
         else if (type.equals("audio")) {
+            nestedScrollView.setVerticalFadingEdgeEnabled(false);
             setPaddingNestedScrollView(presenter.getHeightBottomSheet());
             playAudio();
             disableClick();
         }
         else if (type.equals("edit")) {
             isEdit = !isEdit;
+            nestedScrollView.setVerticalFadingEdgeEnabled(false);
             setPaddingNestedScrollView(presenter.getHeightBottomSheet());
             presenter.visibleEdit(isEdit);
         }

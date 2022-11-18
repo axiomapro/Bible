@@ -179,7 +179,7 @@ public class ListFragment extends Fragment implements View.OnClickListener, List
             isVisibleSearch = true;
             glTabs.setVisibility(View.GONE);
             glSearch.setVisibility(View.VISIBLE);
-            ivSearch.setImageResource(R.drawable.ic_close_white);
+            ivSearch.setImageResource(R.drawable.ic_close_search);
         }
     }
 

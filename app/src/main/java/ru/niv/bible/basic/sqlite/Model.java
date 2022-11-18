@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import ru.niv.bible.basic.component.Converter;
-import ru.niv.bible.basic.component.Static;
 
 public class Model {
 

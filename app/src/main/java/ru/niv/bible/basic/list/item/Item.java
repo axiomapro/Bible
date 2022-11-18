@@ -4,12 +4,13 @@ public class Item {
 
     private String name, text, note, folderName, date;
     private int id, icon, chapter, page, position, type, total, number, color, folder;
-    private boolean checkBox, favorite, underline, click, divider, active, head;
+    private boolean checkBox, favorite, underline, click, divider, active, head, visible;
     private float progress;
 
-    public Item sidebar(String name, int icon) {
+    public Item sidebar(String name, int icon,boolean visible) {
         this.name = name;
         this.icon = icon;
+        this.visible = visible;
         return this;
     }
 
@@ -148,6 +149,10 @@ public class Item {
         this.note = note;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public boolean isCheckBox() {
         return checkBox;
     }
@@ -166,6 +171,10 @@ public class Item {
 
     public boolean isHead() {
         return head;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
     public int getIcon() {

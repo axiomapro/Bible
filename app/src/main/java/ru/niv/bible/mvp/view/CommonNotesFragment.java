@@ -136,7 +136,7 @@ public class CommonNotesFragment extends Fragment implements View.OnClickListene
             isVisibleSearch = true;
             glTitle.setVisibility(View.GONE);
             glSearch.setVisibility(View.VISIBLE);
-            ivSearch.setImageResource(R.drawable.ic_close_white);
+            ivSearch.setImageResource(R.drawable.ic_close_search);
         }
     }
 

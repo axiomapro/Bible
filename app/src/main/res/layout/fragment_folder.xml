@@ -19,7 +19,7 @@
 
             <ImageView
                 android:id="@+id/imageViewBack"
-                android:src="@drawable/ic_back"
+                android:src="@drawable/ic_back_toolbar"
                 android:padding="10dp"
                 android:layout_gravity="center_vertical"
                 android:clickable="true"
@@ -40,7 +40,7 @@
                     <TextView
                         android:id="@+id/textViewTitle"
                         android:textSize="20sp"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/mainToolbarTitle"
                         android:paddingStart="15dp"
                         android:layout_gravity="center_vertical"
                         android:minWidth="100dp"
@@ -65,9 +65,8 @@
                         <EditText
                             android:id="@+id/editTextSearch"
                             android:hint="@string/search"
-                            android:textCursorDrawable="@color/white"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
+                            android:textColor="?attr/mainToolbarSearchEditTextColor"
+                            android:textColorHint="?attr/mainToolbarSearchEditTextHint"
                             android:textSize="16sp"
                             android:paddingEnd="40dp"
                             android:paddingStart="15dp"
@@ -83,7 +82,7 @@
                             android:id="@+id/imageViewClear"
                             android:visibility="invisible"
                             android:layout_gravity="end|center_vertical"
-                            android:src="@drawable/ic_close_white"
+                            android:src="@drawable/ic_close_search"
                             android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -109,10 +108,10 @@
         android:id="@+id/tabLayout"
         app:tabTextAppearance="@style/MineCustomTabText"
         app:tabMode="scrollable"
-        app:tabIconTint="@color/white"
+        app:tabIconTint="?attr/mainToolbarIcon"
         android:background="@drawable/gradient"
-        app:tabTextColor="@color/white"
-        app:tabIndicatorColor="@color/white"
+        app:tabTextColor="?attr/mainToolbarTitle"
+        app:tabIndicatorColor="?attr/mainToolbarTitle"
         android:layout_width="match_parent"
         android:layout_height="60dp"/>
 

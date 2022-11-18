@@ -3,7 +3,6 @@ package ru.niv.bible.mvp.view;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;

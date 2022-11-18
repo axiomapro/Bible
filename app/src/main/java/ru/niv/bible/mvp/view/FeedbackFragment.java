@@ -16,7 +16,6 @@ import ru.niv.bible.MainActivity;
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Checker;
 import ru.niv.bible.basic.component.Go;
-import ru.niv.bible.basic.component.Static;
 import ru.niv.bible.mvp.contract.FeedbackContract;
 import ru.niv.bible.mvp.presenter.FeedbackPresenter;
 

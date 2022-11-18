@@ -8,6 +8,14 @@
         <attr name="mainBackground" format="color"/>
         <attr name="mainToolbarGradientStart" format="color"/>
         <attr name="mainToolbarGradientEnd" format="color"/>
+        <attr name="mainToolbarIcon" format="color"/>
+        <attr name="mainToolbarTitle" format="color"/>
+        <attr name="mainToolbarSearchEditText" format="color"/>
+        <attr name="mainToolbarSearchEditTextHint" format="color"/>
+        <attr name="mainToolbarSearchEditTextColor" format="color"/>
+        <attr name="mainPurple" format="color"/>
+        <attr name="mainPurpleCenter" format="color"/>
+        <attr name="mainPurpleCenterColor" format="color"/>
 
         <attr name="feedbackTitle" format="color"/>
         <attr name="feedbackText" format="color"/>
@@ -81,6 +89,7 @@
         <attr name="mainButtonReadText" format="color"/>
         <attr name="mainButtonReadTextSelect" format="color"/>
         <attr name="mainBottomSheet" format="color"/>
+        <attr name="mainBottomSheetRound" format="color"/>
         <attr name="mainBottomSheetIcon" format="color"/>
         <attr name="mainBottomSheetRecyclerViewBorder" format="color"/>
         <attr name="mainBottomSheetFolderName" format="color"/>
@@ -113,6 +122,7 @@
         <attr name="commonNotesGridPress" format="color"/>
         <attr name="commonNotesGridName" format="color"/>
         <attr name="commonNotesGridText" format="color"/>
+
         <attr name="readingPlanBottomItemTopName" format="color"/>
         <attr name="readingPlanBottomItemTopDate" format="color"/>
         <attr name="readingPlanBottomItemTopProgress" format="color"/>
@@ -124,11 +134,14 @@
         <attr name="readingPlanBottomChildItem" format="color"/>
         <attr name="readingPlanBottomChildItemPress" format="color"/>
         <attr name="readingPlanBottomChildItemName" format="color"/>
+        <attr name="readingPlanBottomItem" format="color"/>
+        <attr name="readingPlanBottomItemBorder" format="color"/>
         <attr name="readingPlanBottomItemBottomName" format="color"/>
         <attr name="readingPlanBottomItemBottomText" format="color"/>
         <attr name="readingPlanBottomItemBottomButton" format="color"/>
         <attr name="readingPlanBottomItemBottomButtonPress" format="color"/>
         <attr name="readingPlanBottomItemBottomButtonText" format="color"/>
+
         <attr name="readingPlanMaterial" format="color"/>
         <attr name="readingPlanMaterialPress" format="color"/>
         <attr name="readingPlanMaterialDate" format="color"/>

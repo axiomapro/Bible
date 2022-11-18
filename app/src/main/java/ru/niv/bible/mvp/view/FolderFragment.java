@@ -156,7 +156,7 @@ public class FolderFragment extends Fragment implements View.OnClickListener {
             isVisibleSearch = true;
             glTitle.setVisibility(View.GONE);
             glSearch.setVisibility(View.VISIBLE);
-            ivSearch.setImageResource(R.drawable.ic_close_white);
+            ivSearch.setImageResource(R.drawable.ic_close_search);
         }
     }
 

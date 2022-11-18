@@ -21,6 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <View
+                android:background="?attr/mainBottomSheetDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
             <LinearLayout
                 android:id="@+id/linearLayoutMore"
                 android:visibility="gone"
@@ -28,238 +33,285 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <View
-                    android:background="?attr/mainBottomSheetDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"/>
-
-                <FrameLayout
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                <HorizontalScrollView
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <GridLayout
-                        android:layout_gravity="start"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingStart="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundOne"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_one_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundTwo"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_two_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundThree"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_three_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundFour"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_four_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundFive"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_five_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundSix"
-                            android:layout_columnWeight="1"
-                            android:padding="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_six_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundSeven"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_seven_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundEight"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_eight_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundNine"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_nine_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRoundTen"
-                            android:padding="10dp"
-                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <ImageView
                                 android:background="@drawable/ic_tab_ten_bottomsheet"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"/>
 
                         </LinearLayout>
 
                     </GridLayout>
 
-                    <GridLayout
-                        android:layout_gravity="end|center_vertical"
+                </HorizontalScrollView>
+
+                <GridLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:id="@+id/linearLayoutNote"
-                            android:padding="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
                             <ImageView
                                 android:id="@+id/imageViewNote"
                                 android:src="@drawable/ic_note"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
                         </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:id="@+id/linearLayoutFavorite"
-                            android:padding="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
                             <ImageView
                                 android:src="@drawable/ic_favorites_black"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
                         </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:id="@+id/linearLayoutUnderline"
-                            android:padding="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
                             <ImageView
                                 android:src="@drawable/ic_underline_black"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
                         </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/linearLayoutFolder"
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
+
+                            <ImageView
+                                android:src="@drawable/ic_folder_bottom_sheet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:id="@+id/linearLayoutClear"
-                            android:padding="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
                             <ImageView
                                 android:src="@drawable/ic_power"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"/>
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
                         </LinearLayout>
 
-                    </GridLayout>
+                    </LinearLayout>
 
-                </FrameLayout>
+                </GridLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewFolder"
                     android:overScrollMode="never"
                     android:visibility="gone"
-                    android:layout_marginTop="15dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/round_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"/>
+                    android:layout_height="130dp"/>
 
                 <GridLayout
+                    android:id="@+id/gridLayoutFolderCreate"
+                    android:visibility="gone"
                     android:layout_marginTop="15dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
@@ -323,6 +375,7 @@
                     <EditText
                         android:id="@+id/editTextName"
                         android:hint="@string/folder_name"
+                        android:maxLines="1"
                         android:layout_columnWeight="1"
                         android:layout_marginEnd="10dp"
                         android:textColorHint="?attr/favoriteDialogEditHintColor"
@@ -331,6 +384,8 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:textSize="15sp"
+                        android:inputType="text"
+                        android:imeOptions="actionDone"
                         android:background="@drawable/edittext_folder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -373,114 +428,166 @@
 
             </LinearLayout>
 
-            <GridLayout
-                android:id="@+id/gridLayoutPreview"
+            <LinearLayout
+                android:id="@+id/linearLayoutPreview"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutCopy"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:background="@drawable/block_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp">
+                <GridLayout
+                    android:columnCount="4"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:src="@drawable/ic_copy_search"
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_columnWeight="1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearLayoutCopy"
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutAudio"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:background="@drawable/block_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp">
+                            <ImageView
+                                android:src="@drawable/ic_copy_bottom_sheet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                    <ImageView
-                        android:src="@drawable/ic_volume"
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_columnWeight="1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearLayoutAudio"
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutShare"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:background="@drawable/block"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp">
+                            <ImageView
+                                android:src="@drawable/ic_volume"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                    <ImageView
-                        android:src="@drawable/ic_share_bottomsheet"
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_columnWeight="1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearLayoutShare"
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutEdit"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:background="@drawable/block_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp">
+                            <ImageView
+                                android:src="@drawable/ic_share_bottomsheet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                    <ImageView
-                        android:src="@drawable/ic_edit"
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_columnWeight="1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearLayoutEdit"
+                            android:gravity="center"
+                            android:background="@drawable/round_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp">
 
-            </GridLayout>
+                            <ImageView
+                                android:src="@drawable/ic_edit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-            <GridLayout
-                android:id="@+id/gridLayoutAudio"
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </GridLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutAudioPanel"
                 android:visibility="gone"
+                android:orientation="vertical"
+                android:background="?attr/mainBottomSheet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutStop"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:background="@drawable/block_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp">
+                <TextView
+                    android:id="@+id/textViewAudioTitle"
+                    android:text="@string/text_voice_acting"
+                    android:textColor="?attr/mainToolbarTitle"
+                    android:padding="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-                    <ImageView
-                        android:src="@drawable/ic_pause_black"
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutStop"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:background="@drawable/block_left"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="60dp">
 
-                </LinearLayout>
+                        <ImageView
+                            android:src="@drawable/ic_pause_black"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutSettings"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:background="@drawable/block_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp">
+                    </LinearLayout>
 
-                    <ImageView
-                        android:src="@drawable/ic_settings_black"
+                    <LinearLayout
+                        android:id="@+id/linearLayoutSettings"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:background="@drawable/block"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="60dp">
 
-                </LinearLayout>
+                        <ImageView
+                            android:src="@drawable/ic_settings_black"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-            </GridLayout>
+                    </LinearLayout>
+
+                </GridLayout>
+
+            </LinearLayout>
 
             <GridLayout
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -493,6 +600,8 @@
                     android:background="@drawable/button_folder_green"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_columnWeight="1"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
@@ -507,6 +616,8 @@
                     android:background="@drawable/button_folder_gray"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

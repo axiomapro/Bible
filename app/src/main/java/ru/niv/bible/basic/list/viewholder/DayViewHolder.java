@@ -1,7 +1,6 @@
 package ru.niv.bible.basic.list.viewholder;
 
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 

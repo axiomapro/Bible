@@ -1,7 +1,6 @@
 package ru.niv.bible.mvp.view;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thoughtbot.expandablerecyclerview.listeners.GroupExpandCollapseListener;
-import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
-
 import java.util.ArrayList;
 
 import ru.niv.bible.R;
 import ru.niv.bible.basic.component.Static;
 import ru.niv.bible.basic.list.adapter.ExpandableRviewAdapter;
-import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.list.item.Day;
 import ru.niv.bible.basic.list.item.Month;

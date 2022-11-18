@@ -121,7 +121,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if (screen.equals(Static.sidebar)) {
                     holder.ivIcon.setImageResource(item.getIcon());
                     holder.tvName.setText(item.getName());
-                    if (position == list.size() - 1) holder.tvDivider.setVisibility(View.GONE);
+                    holder.tvDivider.setVisibility(position == list.size() - 1?View.GONE:View.VISIBLE);
+                    holder.itemView.setVisibility(item.isVisible()?View.VISIBLE:View.GONE);
                 }
                 if (screen.equals(Static.bottomSheet)) {
                     holder.tvName.setText(item.getName());

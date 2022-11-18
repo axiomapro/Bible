@@ -2,7 +2,6 @@ package ru.niv.bible.basic.component;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
 
 import java.util.Locale;

@@ -5,12 +5,12 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -20,6 +20,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -31,11 +41,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,14 +73,19 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
     private FragmentManager manager;
     private Speech speech;
-    private Handler handler;
     private AdView adView;
     private Checker checker;
+    private Handler handler;
     private JSON json;
     private Go go;
     private Param param;
+    private RecyclerViewAdapter adapter;
+    private List<Item> list;
+    private BillingClient billingClient;
+    private SkuDetails skuDetails;
     private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
+    private final String product = "nivbible1"; // product ID для совершения покупки
     private String jsonPath;
     private boolean isAd;
 
@@ -86,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         setContentView(R.layout.activity_main);
         initViews();
         iniClasses();
-        checkDatabase();
         initSidebar();
+        checkDatabase();
         setClickListeners();
         MobileAds.initialize(this, initializationStatus -> {
         });
@@ -173,16 +183,125 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
         if (databaseHelper.isUpgrade()) {
             param.setBoolean(Static.paramFirstLaunch,false);
-            new Upgrade(this, databaseHelper, () -> launch()).execute();
-        }
-        else launch();
+            new Upgrade(this, databaseHelper, this::launch).execute();
+        } else launch();
     }
 
     private void launch() {
         if (checker.internet()) checkRateDialog();
         setParams();
         manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
-        handler.sendEmptyMessageDelayed(1,15000);
+        checkPurchase();
+    }
+
+    private void checkPurchase() {
+        initializeBillingClient();
+        if (!checker.internet() && param.getBoolean(Static.paramPurchase)) return;
+        connectGooglePlayBilling(false);
+    }
+
+    private void initializeBillingClient() {
+        billingClient = BillingClient.newBuilder(getApplicationContext())
+                .setListener(new PurchasesUpdatedListener() {
+                    @Override
+                    public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                            for (Purchase purchase : list) {
+                                verifyPayment(purchase);
+                            }
+                        }
+
+                    }
+                })
+                .enablePendingPurchases()
+                .build();
+    }
+
+    private void connectGooglePlayBilling(boolean launch) {
+        final BillingClient finalBillingClient = billingClient;
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingServiceDisconnected() {
+                Log.d(Static.log,"Не удалось присоединиться");
+                connectGooglePlayBilling(false);
+            }
+
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    finalBillingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, (billingResult1, list) -> {
+                        if (billingResult1.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && list.size() > 0) {
+                            Log.d(Static.log,"Приложение куплено");
+                            param.setBoolean(Static.paramPurchase,true);
+                            handler.removeMessages(1);
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                visibleItemRemoveAds(false);
+                                adView.setVisibility(View.GONE);
+                            },300);
+                        } else {
+                            Log.d(Static.log,"Приложение не куплено");
+                            param.setBoolean(Static.paramPurchase,false);
+                            handler.sendEmptyMessageDelayed(1,15000);
+                            visibleItemRemoveAds(true);
+                            getProducts(launch);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void getProducts(boolean launch) {
+        List<String> skuList = new ArrayList<>();
+        skuList.add(product);
+        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+        billingClient.querySkuDetailsAsync(params.build(),
+                (billingResult, skuDetailsList) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
+                        Log.d(Static.log,"Узнаем цены");
+                        for (SkuDetails skuDetails : skuDetailsList) {
+                            if (skuDetails.getSku().equals(product)) {
+                                setSkuDetails(skuDetails);
+                                if (launch) launchPurchaseFlow(skuDetails);
+                            }
+                        }
+                    }
+
+                });
+    }
+
+    private void launchPurchaseFlow(SkuDetails skuDetails) {
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                .setSkuDetails(skuDetails)
+                .build();
+        billingClient.launchBillingFlow(this, billingFlowParams);
+    }
+
+    private void verifyPayment(Purchase purchase) {
+        ConsumeParams consumeParams = ConsumeParams.newBuilder()
+                .setPurchaseToken(purchase.getPurchaseToken())
+                .build();
+
+        ConsumeResponseListener listener = (billingResult, s) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                if (purchase.getSkus().get(0).equals(product)) {
+                    Log.d(Static.log,"Купили только что, прячем рекламу");
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        param.setBoolean(Static.paramPurchase,true);
+                        visibleItemRemoveAds(false);
+                        adView.setVisibility(View.GONE);
+                    },300);
+                }
+            }
+
+        };
+
+        billingClient.consumeAsync(consumeParams, listener);
+    }
+
+    private void setSkuDetails(SkuDetails skuDetails) {
+        this.skuDetails = skuDetails;
     }
 
     private void setClickListeners() {
@@ -222,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
             else Static.screen = Static.main;
             if (Static.screen.equals(Static.main)) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             else drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            checkLoadAd();
+            if (!param.getBoolean(Static.paramPurchase)) handler.sendEmptyMessageDelayed(1,3000);
         });
     }
 
@@ -246,6 +365,11 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         param.setInt(Static.paramVisit,visit);
     }
 
+    private void visibleItemRemoveAds(boolean status) {
+        list.get(7).setVisible(status);
+        adapter.notifyDataSetChanged();
+    }
+
     public JSONObject getJsonInfo(int position) {
         JSONObject result = null;
         try {
@@ -266,15 +390,17 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void initSidebar() {
-        List<Item> list = new ArrayList<>();
+        list = new ArrayList<>();
         String[] items = {getString(R.string.favorites),getString(R.string.reading_plan),getString(R.string.common_notes),getString(R.string.settings),getString(R.string.feedback),getString(R.string.menu_share_app),getString(R.string.menu_day_night)};
         int[] icons = {R.drawable.ic_menu_favorites,R.drawable.ic_menu_reading_plan,R.drawable.ic_menu_common_notes,R.drawable.ic_menu_settings,R.drawable.ic_menu_feedback,R.drawable.ic_share_sidebar,R.drawable.ic_menu_day};
         for (int i = 0; i < items.length; i++) {
-            list.add(new Item().sidebar(items[i],icons[i]));
+            list.add(new Item().sidebar(items[i],icons[i],true));
         }
+        list.add(new Item().sidebar(getString(R.string.remove_ads),R.drawable.ic_menu_remove_ads,false));
         RecyclerView recyclerView = findViewById(R.id.recyclerViewSidebar);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(Static.sidebar,list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        adapter = new RecyclerViewAdapter(Static.sidebar,list);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
         adapter.setListener(new RecyclerViewAdapter.Click() {
             @Override
@@ -282,46 +408,53 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    String item = adapter.getItem(position).getName();
-                    Fragment fragment = null;
+                    if (position == 7) {
+                        if (skuDetails == null) {
+                            if (checker.internet()) connectGooglePlayBilling(true);
+                            else message(getString(R.string.turn_on_the_internet));
+                        } else launchPurchaseFlow(skuDetails);
+                    } else {
+                        String item = adapter.getItem(position).getName();
+                        Fragment fragment = null;
 
-                    switch (item) {
-                        case Static.favorites:
-                            fragment = new FavoritesFragment();
-                            break;
-                        case Static.readingPlan:
-                            fragment = new ReadingPlanFragment();
-                            break;
-                        case Static.commonNotes:
-                            fragment = new CommonNotesFragment();
-                            break;
-                        case Static.settings:
-                            fragment = new SettingsFragment();
-                            break;
-                        case Static.feedback:
-                            fragment = new FeedbackFragment();
-                            break;
-                        case Static.shareApp:
-                            drawerLayout.closeDrawer(GravityCompat.START);
-                            MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
-                            mainFragment.shareApp();
-                            return;
-                        case Static.dayNight:
-                            if (Static.lightTheme) {
-                                param.setBoolean(Static.paramTheme, false);
-                            } else {
-                                param.setBoolean(Static.paramTheme, true);
-                            }
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
-                            return;
+                        switch (item) {
+                            case Static.favorites:
+                                fragment = new FavoritesFragment();
+                                break;
+                            case Static.readingPlan:
+                                fragment = new ReadingPlanFragment();
+                                break;
+                            case Static.commonNotes:
+                                fragment = new CommonNotesFragment();
+                                break;
+                            case Static.settings:
+                                fragment = new SettingsFragment();
+                                break;
+                            case Static.feedback:
+                                fragment = new FeedbackFragment();
+                                break;
+                            case Static.shareApp:
+                                drawerLayout.closeDrawer(GravityCompat.START);
+                                MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
+                                mainFragment.shareApp();
+                                return;
+                            case Static.dayNight:
+                                if (Static.lightTheme) {
+                                    param.setBoolean(Static.paramTheme, false);
+                                } else {
+                                    param.setBoolean(Static.paramTheme, true);
+                                }
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                                return;
+                        }
+
+                        MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
+                        mainFragment.getMainChild(mainFragment.getPosition()).stop();
+                        if (item.equals(Static.feedback)) manager.beginTransaction().add(R.id.container,new FeedbackFragment(),Static.feedback).addToBackStack(Static.feedback).commit();
+                        else if (item.equals(Static.commonNotes)) manager.beginTransaction().add(R.id.container,new CommonNotesFragment(),Static.commonNotes).addToBackStack(Static.commonNotes).commit();
+                        else manager.beginTransaction().replace(R.id.container,fragment,item).addToBackStack(item).commit();
                     }
-
-                    MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
-                    mainFragment.getMainChild(mainFragment.getPosition()).stop();
-                    if (item.equals(Static.feedback)) manager.beginTransaction().add(R.id.container,new FeedbackFragment(),Static.feedback).addToBackStack(Static.feedback).commit();
-                    else if (item.equals(Static.commonNotes)) manager.beginTransaction().add(R.id.container,new CommonNotesFragment(),Static.commonNotes).addToBackStack(Static.commonNotes).commit();
-                    else manager.beginTransaction().replace(R.id.container,fragment,item).addToBackStack(item).commit();
                 },300);
             }
 
@@ -335,7 +468,6 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
             }
         });
-
     }
 
     public void openDrawerMenu() {
@@ -345,17 +477,11 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        clearBackStack();
-    }
-
-    private void clearBackStack() {
         Static.screen = Static.main;
-        if (manager.getBackStackEntryCount() > 0) {
-            for (int i = 0; i < manager.getBackStackEntryCount(); i++) {
-                manager.popBackStack();
-            }
+        for (int i = 0; i < manager.getBackStackEntryCount(); i++) {
+            manager.popBackStack();
         }
-        manager.beginTransaction().replace(R.id.container,new MainFragment(),Static.main).commit();
+        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
     }
 
     private void checkAlarm() {
@@ -364,10 +490,10 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void checkLoadAd() {
-        if (!isAd && checker.internet()) {
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        }
+        if (isAd || !checker.internet() || param.getBoolean(Static.paramPurchase)) return;
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        adView.setVisibility(View.VISIBLE);
     }
 
     public void message(String message) {
@@ -383,6 +509,23 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         else if (Static.screen.equals(Static.main) && !((MainFragment) manager.findFragmentByTag(Static.main)).getMainChild(((MainFragment) manager.findFragmentByTag(Static.main)).getPosition()).checkBack()) return;
         else if (Static.screen.equals(Static.commonNotes) && !((CommonNotesFragment) manager.findFragmentByTag(Static.commonNotes)).checkBackSearch()) return;
         else super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        billingClient.queryPurchasesAsync(
+                BillingClient.SkuType.INAPP,
+                (billingResult, list) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        for (Purchase purchase : list) {
+                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged()) {
+                                verifyPayment(purchase);
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     @Override

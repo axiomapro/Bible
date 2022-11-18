@@ -25,7 +25,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewBack"
-                    android:src="@drawable/ic_back"
+                    android:src="@drawable/ic_back_toolbar"
                     android:padding="10dp"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                     android:id="@+id/textViewToolbar"
                     android:text="@string/feedback"
                     android:textSize="20sp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/mainToolbarTitle"
                     android:layout_columnWeight="1"
                     android:paddingStart="15dp"
                     android:layout_gravity="center_vertical"

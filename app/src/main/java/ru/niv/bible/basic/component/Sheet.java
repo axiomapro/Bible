@@ -2,8 +2,10 @@ package ru.niv.bible.basic.component;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -31,16 +33,16 @@ public class Sheet implements View.OnClickListener {
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerViewFolder;
     private BottomSheetBehavior bottomSheet;
-    private AppCompatButton buttonLeft;
+    private AppCompatButton buttonLeft, buttonRight;
     private ImageView ivArrow, ivAdd, ivNote;
-    private GridLayout glPreview, glAudio, glFolder, glAdd;
-    private LinearLayout llMore;
-    private TextView tvFolder, tvMessage;
+    private GridLayout glFolder, glAdd, glFolderCreate;
+    private LinearLayout llMore, llAudioPanel, llPreview;
+    private TextView tvFolder, tvMessage, tvAudioTitle;
     private EditText etName, etNote;
     private View llBottomSheet;
     private List<Item> listFolder;
     private String folderName, note;
-    private boolean isFolder, isAdd, isNote;
+    private boolean isFolder, isFolderCreate, isAdd, isNote;
     private int folder;
 
     public interface BottomSheet {
@@ -67,7 +69,6 @@ public class Sheet implements View.OnClickListener {
 
     @SuppressLint("ClickableViewAccessibility")
     public void initViews(View v) {
-        AppCompatButton buttonRight = v.findViewById(R.id.buttonRight);
         LinearLayout llCopy = v.findViewById(R.id.linearLayoutCopy);
         LinearLayout llAudio = v.findViewById(R.id.linearLayoutAudio);
         LinearLayout llShare = v.findViewById(R.id.linearLayoutShare);
@@ -76,6 +77,7 @@ public class Sheet implements View.OnClickListener {
         LinearLayout llFavorite = v.findViewById(R.id.linearLayoutFavorite);
         LinearLayout llUnderline = v.findViewById(R.id.linearLayoutUnderline);
         LinearLayout llClear = v.findViewById(R.id.linearLayoutClear);
+        LinearLayout llFolder = v.findViewById(R.id.linearLayoutFolder);
         LinearLayout llStop = v.findViewById(R.id.linearLayoutStop);
         LinearLayout llSettings = v.findViewById(R.id.linearLayoutSettings);
         LinearLayout llRoundOne = v.findViewById(R.id.linearLayoutRoundOne);
@@ -95,14 +97,17 @@ public class Sheet implements View.OnClickListener {
         etNote = v.findViewById(R.id.editTextNote);
         tvMessage = v.findViewById(R.id.textViewMessage);
         tvFolder = v.findViewById(R.id.textViewFolder);
+        tvAudioTitle = v.findViewById(R.id.textViewAudioTitle);
         buttonLeft = v.findViewById(R.id.buttonLeft);
+        buttonRight = v.findViewById(R.id.buttonRight);
         ivArrow = v.findViewById(R.id.imageViewArrow);
-        glPreview = v.findViewById(R.id.gridLayoutPreview);
-        glAudio = v.findViewById(R.id.gridLayoutAudio);
         glFolder = v.findViewById(R.id.gridLayoutFolder);
         glAdd = v.findViewById(R.id.gridLayoutAdd);
+        glFolderCreate = v.findViewById(R.id.gridLayoutFolderCreate);
+        llAudioPanel = v.findViewById(R.id.linearLayoutAudioPanel);
         llBottomSheet = v.findViewById(R.id.linearLayoutBottomSheet);
         llMore = v.findViewById(R.id.linearLayoutMore);
+        llPreview = v.findViewById(R.id.linearLayoutPreview);
         bottomSheet = BottomSheetBehavior.from(llBottomSheet);
 
         folderName = v.getContext().getString(R.string.default_folder);
@@ -142,6 +147,7 @@ public class Sheet implements View.OnClickListener {
         llFavorite.setOnClickListener(this);
         llUnderline.setOnClickListener(this);
         llClear.setOnClickListener(this);
+        llFolder.setOnClickListener(this);
         glFolder.setOnClickListener(this);
         buttonLeft.setOnClickListener(this);
         buttonRight.setOnClickListener(this);
@@ -177,7 +183,7 @@ public class Sheet implements View.OnClickListener {
 
     public void visibleEdit(boolean status) {
         if (status) {
-            glPreview.setVisibility(View.GONE);
+            llPreview.setVisibility(View.GONE);
             llMore.setVisibility(View.VISIBLE);
             buttonLeft.setVisibility(View.VISIBLE);
         } else {
@@ -186,13 +192,14 @@ public class Sheet implements View.OnClickListener {
             visibleAdd(false,false);
             visibleNote(false);
             buttonLeft.setVisibility(View.GONE);
-            glPreview.setVisibility(View.VISIBLE);
+            llPreview.setVisibility(View.VISIBLE);
         }
     }
 
     public void showAudio() {
-        glPreview.setVisibility(View.GONE);
-        glAudio.setVisibility(View.VISIBLE);
+        llPreview.setVisibility(View.GONE);
+        llAudioPanel.setVisibility(View.VISIBLE);
+        buttonRight.setVisibility(View.GONE);
     }
 
     private void visibleFolder(boolean status) {
@@ -206,6 +213,17 @@ public class Sheet implements View.OnClickListener {
         }
         bottomSheet.setDraggable(!isFolder);
         glFolder.setSelected(isFolder);
+    }
+
+    private void visibleFolderCreate(boolean status) {
+        isFolderCreate = status;
+        if (status) {
+            glFolderCreate.setVisibility(View.VISIBLE);
+        } else {
+            glFolderCreate.setVisibility(View.GONE);
+            visibleAdd(false,false);
+            visibleFolder(false);
+        }
     }
 
     private void visibleAdd(boolean status,boolean delay) {
@@ -241,17 +259,25 @@ public class Sheet implements View.OnClickListener {
         bottomSheet.setState(status?BottomSheetBehavior.STATE_EXPANDED:BottomSheetBehavior.STATE_HIDDEN);
         if (!status) {
             llMore.setVisibility(View.GONE);
-            glAudio.setVisibility(View.GONE);
+            glFolderCreate.setVisibility(View.GONE);
+            llAudioPanel.setVisibility(View.GONE);
             buttonLeft.setVisibility(View.GONE);
-            glPreview.setVisibility(View.VISIBLE);
+            buttonRight.setVisibility(View.VISIBLE);
+            llPreview.setVisibility(View.VISIBLE);
             visibleFolder(false);
             visibleAdd(false,true);
             visibleNote(false);
         }
     }
 
+    private int convertDpToPx(int dp) {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
+    }
+
     public int getHeightBottomSheet() {
-        return llBottomSheet.getHeight();
+        return buttonRight.getVisibility() == View.VISIBLE?llBottomSheet.getHeight():llBottomSheet.getHeight() - buttonRight.getHeight() - convertDpToPx(30) + tvAudioTitle.getHeight();
     }
 
     private String getNote() {
@@ -360,6 +386,9 @@ public class Sheet implements View.OnClickListener {
                 etNote.getText().clear();
                 ivNote.setImageResource(R.drawable.ic_note);
                 listener.onSetItem(folderName,"clear",getNote(),folder,1);
+                break;
+            case R.id.linearLayoutFolder:
+                visibleFolderCreate(!isFolderCreate);
                 break;
             case R.id.linearLayoutSend:
                 listener.onSend(etName.getText().toString().trim());

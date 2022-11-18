@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -21,9 +22,14 @@ public class AlertReceiver extends BroadcastReceiver {
                 .setAction(Intent.ACTION_MAIN)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context,
-                0, notificationIntent,
-                0);
+        PendingIntent contentIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            contentIntent = PendingIntent.getActivity(context,
+                    0, notificationIntent, PendingIntent.FLAG_MUTABLE);
+        } else {
+            contentIntent = PendingIntent.getActivity(context,
+                    0, notificationIntent, 0);
+        }
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         android.app.Notification notification = new NotificationCompat.Builder(context, Static.notificationChannel)
