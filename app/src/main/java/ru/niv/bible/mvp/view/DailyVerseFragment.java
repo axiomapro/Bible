@@ -213,10 +213,11 @@ public class DailyVerseFragment extends Fragment implements DailyVerseContract.V
             isIgnoreCheckBox = true;
             cbSelectAll.setChecked(true);
         }
-        if (selected == total - 1) {
+        else if (selected == total - 1) {
             isIgnoreCheckBox = true;
             cbSelectAll.setChecked(false);
         }
+        else isIgnoreCheckBox = false;
     }
 
     private void editor(boolean add,String name,String chapters,String notification,int position) {
