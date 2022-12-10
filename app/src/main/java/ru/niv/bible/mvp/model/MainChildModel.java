@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -27,6 +28,7 @@ public class MainChildModel extends Model {
         this.context = context;
     }
 
+    @SuppressLint("Range")
     public List<Item> getList(int chapter,int page) {
         String columnHead = Static.supportHead?",head":"";
         List<Item> list = new ArrayList<>();
@@ -65,6 +67,7 @@ public class MainChildModel extends Model {
         return list;
     }
 
+    @SuppressLint("Range")
     public List<Item> getListFolder() {
         List<Item> list = new ArrayList<>();
         Cursor cursor = get(Static.tableFolder,"id,name",null,true,"name asc");
@@ -79,6 +82,7 @@ public class MainChildModel extends Model {
         return list;
     }
 
+    @SuppressLint("Range")
     public int getCorrectPosition(int chapter,int page,int position) {
         int result = 0;
         Cursor cursor = getBySql("select count(1) as total from text where chapter = "+chapter+" and page = "+page+" and id between(select min(id) from text where chapter = "+chapter+" and page = "+page+") and (select id from text where chapter = "+chapter+" and page = "+page+" and position = "+position+")",null);

@@ -17,7 +17,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static SQLiteDatabase db;
     private static DatabaseHelper instance;
-    private static final int DATABASE_VERSION = 2; // do not edit (17.11.21)
+    private static final int DATABASE_VERSION = 3; // real version 3, do not edit (05.12.22)
+    private int oldVersionDb;
     private static boolean isOpenDb;
     private boolean copiedActualDb, isUpgrade;
 
@@ -38,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (copiedActualDb) return; // защита от обновления, когда ты только установил и версия базы данных больше единицы, то при установке срабатывает onUpgrade
         isUpgrade = true;
+        oldVersionDb = oldVersion;
     }
 
     public void checkExistDB(Context context) {
@@ -94,6 +96,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public SQLiteDatabase getDb() {
         if (db == null) openDb();
         return db;
+    }
+
+    public int getOldVersionDb() {
+        return oldVersionDb;
     }
 
     public boolean isUpgrade() {

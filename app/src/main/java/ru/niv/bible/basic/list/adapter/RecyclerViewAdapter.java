@@ -17,6 +17,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ import ru.niv.bible.basic.list.item.Item;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements Filterable {
 
     private Click listener;
+    private ClickDailyVerse listenerDailyVerse;
     private String screen, query;
     private List<Item> list;
     private List<Item> listFilter;
@@ -48,6 +50,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void onCheckBox(int position,boolean isChecked);
     }
 
+    public interface ClickDailyVerse {
+        void onClick(int position);
+        void onLongClick(int position);
+        void onShare(int position);
+        void onCopy(int position);
+        void onEdit(int position);
+        void onRefresh(int position);
+    }
+
     public void setTab(int tab) {
         this.tab = tab;
     }
@@ -58,6 +69,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void setListener(Click listener) {
         this.listener = listener;
+    }
+
+    public void setListenerDailyVerse(ClickDailyVerse listener) {
+        this.listenerDailyVerse = listener;
     }
 
     public void setCheckBox(boolean checkBox) {
@@ -96,6 +111,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if (screen.equals(Static.commonNotesList)) item = R.layout.item_common_notes;
                 if (screen.equals(Static.commonNotesGrid)) item = R.layout.item_common_notes_grid;
                 if (screen.equals(Static.readingPlanChild)) item = R.layout.item_reading_plan_child;
+                if (screen.equals(Static.dailyVerse)) item = R.layout.item_daily_verse;
+                if (screen.equals(Static.dailyVerseEditor)) item = R.layout.item_daily_verse_editor;
         }
 
         View v = LayoutInflater.from(parent.getContext()).inflate(item,parent,false);
@@ -248,12 +265,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     }
 
                 }
+                if (screen.equals(Static.dailyVerse)) {
+                    holder.tvName.setText(item.getName());
+                    holder.tvText.setText(item.getText().replaceAll("\\<[^>]*>",""));
+                    holder.tvChapter.setText(item.getChapterName()+" "+item.getPage()+":"+item.getPosition());
+                    holder.llShare.setOnClickListener(v -> listenerDailyVerse.onShare(position));
+                    holder.llCopy.setOnClickListener(v -> listenerDailyVerse.onCopy(position));
+                    holder.llEdit.setOnClickListener(v -> listenerDailyVerse.onEdit(position));
+                    holder.llRefresh.setOnClickListener(v -> listenerDailyVerse.onRefresh(position));
+                }
+                if (screen.equals(Static.dailyVerseEditor)) {
+                    holder.tvName.setText(item.getName());
+                    // block redraw
+                    holder.checkBox.setOnCheckedChangeListener(null);
+                    // checkable
+                    holder.checkBox.setChecked(item.isCheckBox());
+                    // listener
+                    holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        item.setCheckBox(isChecked);
+                        if (listener != null) listener.onCheckBox(position,holder.checkBox.isChecked());
+                    });
+                }
 
                 holder.itemView.setOnClickListener(v -> {
+                    if (screen.equals(Static.dailyVerse) && listenerDailyVerse != null) listenerDailyVerse.onClick(position);
                     if (listener != null) listener.onClick(position);
                 });
 
                 holder.itemView.setOnLongClickListener(v -> {
+                    if (screen.equals(Static.dailyVerse) && listenerDailyVerse != null) listenerDailyVerse.onLongClick(position);
                     if (listener != null) listener.onLongClick(position);
                     return false;
                 });
@@ -370,15 +410,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView tvName, tvText, tvNote, tvTotal, tvNumber, tvFolderName, tvDate, tvClick, tvDivider;
+        private final TextView tvName, tvText, tvNote, tvTotal, tvNumber, tvFolderName, tvDate, tvClick, tvDivider, tvChapter;
         private final ImageView ivIcon, ivFavorite;
         private final CheckBox checkBox;
         private final GridLayout glFolder, glNote;
+        private final LinearLayout llShare, llCopy, llEdit, llRefresh;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.itemName);
             tvText = itemView.findViewById(R.id.itemText);
+            tvChapter = itemView.findViewById(R.id.itemChapter);
             tvNote = itemView.findViewById(R.id.itemNoteText);
             tvTotal = itemView.findViewById(R.id.itemTotal);
             tvNumber = itemView.findViewById(R.id.itemNumber);
@@ -391,6 +433,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             checkBox = itemView.findViewById(R.id.itemCheckBox);
             glFolder = itemView.findViewById(R.id.itemFolder);
             glNote = itemView.findViewById(R.id.itemNote);
+            llShare = itemView.findViewById(R.id.itemShare);
+            llCopy = itemView.findViewById(R.id.itemCopy);
+            llEdit = itemView.findViewById(R.id.itemEdit);
+            llRefresh = itemView.findViewById(R.id.itemRefresh);
         }
     }
 }

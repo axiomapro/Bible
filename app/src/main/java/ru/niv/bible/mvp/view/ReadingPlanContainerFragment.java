@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,9 +32,10 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
     private ViewPager viewPager;
     private ProgressBar progressBar;
     private CheckBox checkBox;
-    private TextView tvTitle, tvProgress, tvName, tvText;
+    private ImageView ivNotification;
+    private TextView tvTitle, tvProgress, tvName, tvText, tvNotification;
     private AppCompatButton buttonPlan, buttonStop, buttonYear, buttonHalfYear, buttonQuarterYear;
-    private String startPlan;
+    private String startPlan, notificationPlan;
     private int id, total, typePlan, startPosition;
 
     public static ReadingPlanContainerFragment newInstance(int id) {
@@ -63,6 +65,8 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
         tvProgress = v.findViewById(R.id.textViewProgress);
         tvName = v.findViewById(R.id.textViewName);
         tvText = v.findViewById(R.id.textViewText);
+        tvNotification = v.findViewById(R.id.textViewNotification);
+        ivNotification = v.findViewById(R.id.imageViewNotification);
         viewPager = v.findViewById(R.id.viewPager);
         progressBar = v.findViewById(R.id.progressBar);
         checkBox = v.findViewById(R.id.checkBox);
@@ -104,11 +108,12 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
     }
 
     private void setParams() {
-        presenter.getData(id, (name, text, start, type, status) -> {
+        presenter.getData(id, (name, text, start, notification, type, status) -> {
             typePlan = type;
             total = converter.getDayTotal(type);
             startPosition = converter.getDayPassed(start);
             startPlan = start;
+            notificationPlan = notification;
 
             tvTitle.setText(name);
             tvName.setText(name);
@@ -116,6 +121,8 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
             if (status) {
                 llTop.setVisibility(View.VISIBLE);
                 llBottom.setVisibility(View.GONE);
+                ivNotification.setImageResource(notification != null?R.drawable.ic_notification_active:R.drawable.ic_notification);
+                tvNotification.setText(notification);
                 initViewPager();
             } else {
                 llTop.setVisibility(View.GONE);
@@ -132,6 +139,7 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
         buttonYear.setOnClickListener(this);
         buttonHalfYear.setOnClickListener(this);
         buttonQuarterYear.setOnClickListener(this);
+        ivNotification.setOnClickListener(this);
         checkBox.setOnCheckedChangeListener(this);
     }
 
@@ -151,6 +159,13 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
     @Override
     public void redraw() {
         ((ReadingPlanFragment) getParentFragmentManager().findFragmentByTag(Static.readingPlan)).redraw();
+    }
+
+    @Override
+    public void notification(String notification) {
+        notificationPlan = notification;
+        ivNotification.setImageResource(notification != null?R.drawable.ic_notification_active:R.drawable.ic_notification);
+        tvNotification.setText(notification);
     }
 
     @Override
@@ -177,6 +192,9 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
                 break;
             case R.id.buttonQuarterYear:
                 presenter.dialog(id,3,90);
+                break;
+            case R.id.imageViewNotification:
+                presenter.dialogNotification(id,notificationPlan);
                 break;
         }
     }

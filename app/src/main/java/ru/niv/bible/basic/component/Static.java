@@ -32,6 +32,8 @@ public class Static {
     public static final String readingPlanDialog = "Reading plan dialog";
     public static final String readingPlanChild = "Reading plan child";
     public static final String readingPlanMaterial = "Reading plan material";
+    public static final String dailyVerse = "Daily verse";
+    public static final String dailyVerseEditor = "Daily verse editor";
     public static final String commonNotes = "Common notes";
     public static final String commonNotesList = "Common notes list";
     public static final String commonNotesGrid = "Common notes grid";
@@ -46,6 +48,7 @@ public class Static {
     public static final String tableFavorite = "favorite";
     public static final String tablePlan = "plan";
     public static final String tableReadingPlan = "reading_plan";
+    public static final String tableDailyVerse = "daily_verse";
     // ключ / значение
     public static final String paramPosition = "position"; // main
     public static final String paramFontSize = "font-size";

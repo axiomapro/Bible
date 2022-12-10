@@ -2,10 +2,9 @@ package ru.niv.bible.basic.list.item;
 
 public class Item {
 
-    private String name, text, note, folderName, date;
+    private String name, text, note, folderName, date, chapterName, chapters, notification;
     private int id, icon, chapter, page, position, type, total, number, color, folder;
     private boolean checkBox, favorite, underline, click, divider, active, head, visible;
-    private float progress;
 
     public Item sidebar(String name, int icon,boolean visible) {
         this.name = name;
@@ -109,6 +108,26 @@ public class Item {
         return this;
     }
 
+    public Item dailyVerse(int id,String name,String text,String chapterName,String chapters,String notification,int chapter,int page,int position) {
+        this.id = id;
+        this.name = name;
+        this.text = text;
+        this.chapterName = chapterName;
+        this.chapters = chapters;
+        this.notification = notification;
+        this.chapter = chapter;
+        this.page = page;
+        this.position = position;
+        return this;
+    }
+
+    public Item dailyVerseEditor(int id,String name,boolean checkBox) {
+        this.id = id;
+        this.name = name;
+        this.checkBox = checkBox;
+        return this;
+    }
+
     public void setCheckBox(boolean checkBox) {
         this.checkBox = checkBox;
     }
@@ -153,6 +172,18 @@ public class Item {
         this.visible = visible;
     }
 
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
+    }
+
+    public void setChapter(int chapter) {
+        this.chapter = chapter;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
     public boolean isCheckBox() {
         return checkBox;
     }
@@ -167,6 +198,18 @@ public class Item {
 
     public String getNote() {
         return note;
+    }
+
+    public String getChapterName() {
+        return chapterName;
+    }
+
+    public String getChapters() {
+        return chapters;
+    }
+
+    public String getNotification() {
+        return notification;
     }
 
     public boolean isHead() {
@@ -233,12 +276,16 @@ public class Item {
         this.active = active;
     }
 
-    public void setProgress(float progress) {
-        this.progress = progress;
-    }
-
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public void setChapters(String chapters) {
+        this.chapters = chapters;
+    }
+
+    public void setNotification(String notification) {
+        this.notification = notification;
     }
 
     public boolean isFavorite() {
@@ -259,9 +306,5 @@ public class Item {
 
     public boolean isActive() {
         return active;
-    }
-
-    public float getProgress() {
-        return progress;
     }
 }

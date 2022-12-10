@@ -1,5 +1,7 @@
 package ru.niv.bible.basic.component;
 
+import android.text.TextUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,11 +22,15 @@ public class Converter {
         return result.format(new Date(c.getTimeInMillis()));
     }
 
-    public String getNameUppercase(String name) {
+    public String getNameUppercase(String name,boolean strict) {
         String result = name;
-        int len = result.length();
-        if (len == 1) result = name.substring(0,1).toUpperCase();
-        else if (len > 1) result = name.substring(0,1).toUpperCase()+name.substring(1).toLowerCase();
+        if (TextUtils.isEmpty(name)) return result;
+        if (name.length() == 1) result = name.substring(0,1).toUpperCase();
+        else {
+            if (strict) result = name.substring(0,1).toUpperCase()+name.substring(1).toLowerCase();
+            else result = name.substring(0,1).toUpperCase()+name.substring(1);
+        }
+
         return result;
     }
 

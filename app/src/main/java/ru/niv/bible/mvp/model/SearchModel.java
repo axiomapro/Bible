@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -16,6 +17,7 @@ public class SearchModel extends Model {
         super(context);
     }
 
+    @SuppressLint("Range")
     public List<Item> getList(String query,int tab,boolean exact,boolean partial) {
         String sortBy = "";
         String[] arg;
@@ -42,6 +44,7 @@ public class SearchModel extends Model {
         return list;
     }
 
+    @SuppressLint("Range")
     public String getTextByIds(String ids) {
         int i = 1;
         StringBuilder result = new StringBuilder();

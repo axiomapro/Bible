@@ -79,7 +79,7 @@ public class MainChildPresenter implements MainChildContract.Presenter {
 
             @Override
             public void onSend(String name) {
-                String correctName = converter.getNameUppercase(name);
+                String correctName = converter.getNameUppercase(name,true);
                 if (TextUtils.isEmpty(correctName)) sheet.message(v.getContext().getString(R.string.write_the_name));
                 else if (correctName.equals(context.getString(R.string.default_folder))) sheet.message(context.getString(R.string.name_is_not_available));
                 else {

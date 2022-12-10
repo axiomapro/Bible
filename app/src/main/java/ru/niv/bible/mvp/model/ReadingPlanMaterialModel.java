@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -16,6 +17,7 @@ public class ReadingPlanMaterialModel extends Model {
         super(context);
     }
 
+    @SuppressLint("Range")
     public void getData(int id,Data listener) {
         Cursor cursor = get(Static.tablePlan,"type,name,start,finish","id = "+id,false,null);
         if (cursor.moveToFirst()) {
@@ -28,6 +30,7 @@ public class ReadingPlanMaterialModel extends Model {
         cursor.close();
     }
 
+    @SuppressLint("Range")
     public String getLinks(int plan,int type,int day) {
         int i = 1;
         StringBuilder result = new StringBuilder();

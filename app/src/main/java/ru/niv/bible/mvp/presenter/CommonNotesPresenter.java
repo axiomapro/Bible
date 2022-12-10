@@ -41,7 +41,7 @@ public class CommonNotesPresenter implements CommonNotesContract.Presenter {
         dialog.commonNotes(statusAdd,name,note, new Dialog.Note() {
             @Override
             public void onResult(String name, String note, AlertDialog dialog, Dialog.Message listener) {
-                String correctName = converter.getNameUppercase(name);
+                String correctName = converter.getNameUppercase(name,false);
                 String correctNote = converter.getTextUppercase(note);
                 if (TextUtils.isEmpty(correctName)) listener.onMessage(context.getString(R.string.write_the_name));
                 else if (TextUtils.isEmpty(correctNote)) listener.onMessage(context.getString(R.string.write_the_text));

@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -16,6 +17,7 @@ public class ReadingPlanModel extends Model {
         super(context);
     }
 
+    @SuppressLint("Range")
     public List<Item> getList() {
         List<Item> list = new ArrayList<>();
         Cursor cursor = get(Static.tablePlan,"id,name,text,type,start,status",null,false,"start desc,sort asc");
@@ -25,6 +27,10 @@ public class ReadingPlanModel extends Model {
         }
         cursor.close();
         return list;
+    }
+
+    public Cursor getNotifications() {
+        return getBySql("select id,notification from plan where notification is not null group by notification",null);
     }
 
 }

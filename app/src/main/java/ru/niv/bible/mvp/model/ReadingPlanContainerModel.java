@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -9,13 +10,14 @@ import ru.niv.bible.basic.sqlite.Model;
 public class ReadingPlanContainerModel extends Model {
 
     public interface Data {
-        void onData(String name,String text,String start,int type,boolean status);
+        void onData(String name,String text,String start,String notification,int type,boolean status);
     }
 
     public ReadingPlanContainerModel(Context context) {
         super(context);
     }
 
+    @SuppressLint("Range")
     public String getListDialog(int plan, int type, int day) {
         int i = 1;
         StringBuilder result = new StringBuilder();
@@ -39,15 +41,17 @@ public class ReadingPlanContainerModel extends Model {
         return result.toString();
     }
 
+    @SuppressLint("Range")
     public void getData(int id,Data listener) {
-        Cursor cursor = get(Static.tablePlan,"type,name,text,start,status","id = "+id,false,null);
+        Cursor cursor = get(Static.tablePlan,"type,name,text,start,notification,status","id = "+id,false,null);
         if (cursor.moveToFirst()) {
             int type = cursor.getInt(cursor.getColumnIndex("type"));
             int status = cursor.getInt(cursor.getColumnIndex("status"));
             String name = cursor.getString(cursor.getColumnIndex("name"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
             String start = cursor.getString(cursor.getColumnIndex("start"));
-            listener.onData(name,text,start != null?start.substring(0,10):null,type,status == 1);
+            String notification = cursor.getString(cursor.getColumnIndex("notification"));
+            listener.onData(name,text,start != null?start.substring(0,10):null,notification,type,status == 1);
         }
         cursor.close();
     }
@@ -78,6 +82,10 @@ public class ReadingPlanContainerModel extends Model {
     public void inactive(int id) {
         setById(Static.tablePlan,cv.readingPlanInactive(),id);
         set(Static.tableReadingPlan,cv.status(0),"plan_id = "+id);
+    }
+
+    public void setNotification(int id,String notification) {
+        setById(Static.tablePlan,cv.notificationReadingPlan(notification),id);
     }
 
 }

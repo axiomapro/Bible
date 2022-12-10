@@ -9,8 +9,8 @@ android {
         applicationId "ru.niv.bible"
         minSdkVersion 21
         targetSdkVersion 33 // Заменить на 33 версию (Android 13)
-        versionCode 3
-        versionName "3.0"
+        versionCode 4
+        versionName "4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

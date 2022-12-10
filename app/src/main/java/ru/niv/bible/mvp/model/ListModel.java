@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -16,6 +17,7 @@ public class ListModel extends Model {
         super(context);
     }
 
+    @SuppressLint("Range")
     public List<Item> getList(int tab) {
         String where = null;
         if (tab == 2) where = "type = 1";
@@ -33,6 +35,7 @@ public class ListModel extends Model {
         return list;
     }
 
+    @SuppressLint("Range")
     public int getTabByPosition(int position) {
         int result = 0;
         Cursor cursor = getBySql("select max(id) as id,(select type from chapter where id = chapter) as type from (select id,chapter from text group by chapter, page limit "+position+")",null);

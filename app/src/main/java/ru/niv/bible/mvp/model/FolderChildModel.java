@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -20,6 +21,7 @@ public class FolderChildModel extends Model {
         this.context = context;
     }
 
+    @SuppressLint("Range")
     public List<Item> getList(int type,int cat,int tab) {
         String where;
         if (type == 1) {

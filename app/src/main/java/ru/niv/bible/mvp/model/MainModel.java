@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -17,6 +18,10 @@ public class MainModel extends Model {
         super(context);
     }
 
+    public interface Action {
+        void onCheck(String type,int id);
+    }
+
     public boolean isSupportHead() {
         boolean result;
         try {
@@ -28,6 +33,7 @@ public class MainModel extends Model {
         return result;
     }
 
+    @SuppressLint("Range")
     public String createJson() {
         JSONArray jsonArray = new JSONArray();
         Cursor cursor = getBySql("select chapter as id,(select name from chapter where id = chapter) as name,page from text group by chapter, page",null);
@@ -49,6 +55,7 @@ public class MainModel extends Model {
         return jsonArray.toString();
     }
 
+    @SuppressLint("Range")
     public int getMaxPosition() {
         int result = 0;
         Cursor cursor = getBySql("select count(1) as total from (select id from text group by chapter,page)",null);
@@ -57,6 +64,7 @@ public class MainModel extends Model {
         return result;
     }
 
+    @SuppressLint("Range")
     public int getPositionByChapterAndPage(int chapter,int page) {
         int result = 0;
         Cursor cursor = get(Static.tableText,"id","chapter = "+chapter+" and page = "+page,false,null);
@@ -68,6 +76,7 @@ public class MainModel extends Model {
         return result;
     }
 
+    @SuppressLint("Range")
     public String getChapterName(int chapter) {
         String result = null;
         Cursor cursor = get(Static.tableChapter,"name","id = "+chapter,false,null);
@@ -76,6 +85,23 @@ public class MainModel extends Model {
         }
         cursor.close();
         return result;
+    }
+
+    @SuppressLint("Range")
+    public void checkOneNotification(Action listener) {
+        Cursor cursor = get(Static.tablePlan,"id","notification is not null",false,"id asc limit 1");
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            listener.onCheck("reading plan",id);
+        } else {
+            Cursor cursorDailyVerse = get(Static.tableDailyVerse,"id","notification is not null",true,"id asc limit 1");
+            if (cursorDailyVerse.moveToFirst()) {
+                int id = cursorDailyVerse.getInt(cursorDailyVerse.getColumnIndex("id"));
+                listener.onCheck("daily verse",id);
+            } else listener.onCheck("empty",0);
+            cursorDailyVerse.close();
+        }
+        cursor.close();
     }
 
 }

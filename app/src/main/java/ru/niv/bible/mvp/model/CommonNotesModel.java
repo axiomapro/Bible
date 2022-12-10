@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -18,6 +19,7 @@ public class CommonNotesModel extends Model {
         super(context);
     }
 
+    @SuppressLint("Range")
     public List<Item> getList() {
         List<Item> list = new ArrayList<>();
         Cursor cursor = get(Static.tableNote,"id,name,text,date",null,true,"date desc");

@@ -13,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.SwitchCompat;
+
+import java.util.Calendar;
 
 import ru.niv.bible.R;
 
@@ -53,6 +57,10 @@ public class Dialog {
     public interface ReadingPlan {
         void onNumber(int number,GetList listener);
         void onResult(int number);
+    }
+
+    public interface Notification {
+        void onResult(String time,boolean status);
     }
 
     public interface GetList {
@@ -317,6 +325,53 @@ public class Dialog {
             listener.onResult(numberPicker.getValue());
         });
         buttonRight.setOnClickListener(v13 -> dialog.dismiss());
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void notification(String notification,Notification listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View v = LayoutInflater.from(context).inflate(R.layout.dialog_notification,null);
+        TimePicker timePicker = v.findViewById(R.id.timePicker);
+        SwitchCompat switchCompat = v.findViewById(R.id.switchCompat);
+        AppCompatButton buttonCancel = v.findViewById(R.id.buttonCancel);
+        AppCompatButton buttonSave = v.findViewById(R.id.buttonSave);
+
+        Calendar calendar = Calendar.getInstance();
+        int hour = notification != null?Integer.parseInt(notification.split(":")[0]):calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = notification != null?Integer.parseInt(notification.split(":")[1]):calendar.get(Calendar.MINUTE);
+        timePicker.setIs24HourView(true);
+        timePicker.setCurrentHour(hour);
+        timePicker.setCurrentMinute(minute);
+        builder.setView(v);
+
+        final AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
+        dialog.show();
+
+        buttonCancel.setOnTouchListener((v15, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                buttonCancel.startAnimation(AnimationUtils.loadAnimation(context,R.anim.click_up));
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                buttonCancel.startAnimation(AnimationUtils.loadAnimation(context,R.anim.click_down));
+            }
+            return false;
+        });
+
+        buttonSave.setOnTouchListener((v14, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                buttonSave.startAnimation(AnimationUtils.loadAnimation(context,R.anim.click_up));
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                buttonSave.startAnimation(AnimationUtils.loadAnimation(context,R.anim.click_down));
+            }
+            return false;
+        });
+
+        buttonCancel.setOnClickListener(v1 -> dialog.dismiss());
+        buttonSave.setOnClickListener(v12 -> {
+            dialog.dismiss();
+            listener.onResult(timePicker.getCurrentHour()+":"+timePicker.getCurrentMinute(),switchCompat.isChecked());
+        });
     }
 
     @SuppressLint("ClickableViewAccessibility")

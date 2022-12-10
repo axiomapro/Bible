@@ -1,5 +1,6 @@
 package ru.niv.bible;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Looper;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,11 +57,15 @@ import ru.niv.bible.basic.component.Go;
 import ru.niv.bible.basic.component.Param;
 import ru.niv.bible.basic.component.Static;
 import ru.niv.bible.basic.list.item.Item;
+import ru.niv.bible.basic.receiver.AlertReceiver;
+import ru.niv.bible.basic.receiver.RebootReceiver;
 import ru.niv.bible.basic.sqlite.DatabaseHelper;
 import ru.niv.bible.basic.sqlite.Upgrade;
 import ru.niv.bible.mvp.model.MainModel;
+import ru.niv.bible.mvp.presenter.MainPresenter;
 import ru.niv.bible.mvp.view.CommonNotesFragment;
 import ru.niv.bible.mvp.view.ContentFragment;
+import ru.niv.bible.mvp.view.DailyVerseFragment;
 import ru.niv.bible.mvp.view.FavoritesFragment;
 import ru.niv.bible.mvp.view.FeedbackFragment;
 import ru.niv.bible.mvp.view.FolderFragment;
@@ -192,6 +198,18 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         setParams();
         manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
         checkPurchase();
+        checkNotifications();
+    }
+
+    private void checkNotifications() {
+        Alarm alarm = new Alarm(this);
+        MainModel model = new MainModel(this);
+        model.checkOneNotification((type, id) -> {
+            if (id > 0 && !alarm.checkAlarm(id,type.equals("reading plan"))) {
+                RebootReceiver rebootReceiver = new RebootReceiver();
+                rebootReceiver.onReceive(getApplicationContext(),null);
+            }
+        });
     }
 
     private void checkPurchase() {
@@ -366,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void visibleItemRemoveAds(boolean status) {
-        list.get(7).setVisible(status);
+        list.get(8).setVisible(status);
         adapter.notifyDataSetChanged();
     }
 
@@ -391,8 +409,8 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
     private void initSidebar() {
         list = new ArrayList<>();
-        String[] items = {getString(R.string.favorites),getString(R.string.reading_plan),getString(R.string.common_notes),getString(R.string.settings),getString(R.string.feedback),getString(R.string.menu_share_app),getString(R.string.menu_day_night)};
-        int[] icons = {R.drawable.ic_menu_favorites,R.drawable.ic_menu_reading_plan,R.drawable.ic_menu_common_notes,R.drawable.ic_menu_settings,R.drawable.ic_menu_feedback,R.drawable.ic_share_sidebar,R.drawable.ic_menu_day};
+        String[] items = {getString(R.string.favorites),getString(R.string.reading_plan),getString(R.string.daily_verse),getString(R.string.common_notes),getString(R.string.settings),getString(R.string.feedback),getString(R.string.menu_share_app),getString(R.string.menu_day_night)};
+        int[] icons = {R.drawable.ic_menu_favorites,R.drawable.ic_menu_reading_plan,R.drawable.ic_menu_daily_verse,R.drawable.ic_menu_common_notes,R.drawable.ic_menu_settings,R.drawable.ic_menu_feedback,R.drawable.ic_share_sidebar,R.drawable.ic_menu_day};
         for (int i = 0; i < items.length; i++) {
             list.add(new Item().sidebar(items[i],icons[i],true));
         }
@@ -408,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    if (position == 7) {
+                    if (position == 8) {
                         if (skuDetails == null) {
                             if (checker.internet()) connectGooglePlayBilling(true);
                             else message(getString(R.string.turn_on_the_internet));
@@ -423,6 +441,9 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
                                 break;
                             case Static.readingPlan:
                                 fragment = new ReadingPlanFragment();
+                                break;
+                            case Static.dailyVerse:
+                                fragment = new DailyVerseFragment();
                                 break;
                             case Static.commonNotes:
                                 fragment = new CommonNotesFragment();
@@ -484,11 +505,6 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
     }
 
-    private void checkAlarm() {
-        Alarm alarm = new Alarm(this);
-        if (!alarm.checkAlarm(1)) alarm.setRepeating(1);
-    }
-
     private void checkLoadAd() {
         if (isAd || !checker.internet() || param.getBoolean(Static.paramPurchase)) return;
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -508,6 +524,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         else if (Static.screen.equals(Static.search) && !((SearchFragment) manager.findFragmentByTag(Static.search)).checkBackSelect()) return;
         else if (Static.screen.equals(Static.main) && !((MainFragment) manager.findFragmentByTag(Static.main)).getMainChild(((MainFragment) manager.findFragmentByTag(Static.main)).getPosition()).checkBack()) return;
         else if (Static.screen.equals(Static.commonNotes) && !((CommonNotesFragment) manager.findFragmentByTag(Static.commonNotes)).checkBackSearch()) return;
+        else if (Static.screen.equals(Static.dailyVerse) && !((DailyVerseFragment) manager.findFragmentByTag(Static.dailyVerse)).checkBack()) return;
         else super.onBackPressed();
     }
 

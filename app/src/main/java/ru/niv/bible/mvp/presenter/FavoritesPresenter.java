@@ -41,7 +41,7 @@ public class FavoritesPresenter implements FavoritesContract.Presenter {
         dialog.folder(statusAdd,name, new Dialog.Folder() {
             @Override
             public void onResult(String name, AlertDialog dialog, Dialog.Message listener) {
-                String correctName = converter.getNameUppercase(name);
+                String correctName = converter.getNameUppercase(name,false);
                 if (TextUtils.isEmpty(correctName)) listener.onMessage(context.getString(R.string.write_the_name));
                 else if (correctName.equals(context.getString(R.string.default_folder))) listener.onMessage(context.getString(R.string.name_is_not_available));
                 else {

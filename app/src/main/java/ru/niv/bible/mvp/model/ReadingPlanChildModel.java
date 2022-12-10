@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -16,6 +17,7 @@ public class ReadingPlanChildModel extends Model {
         super(context);
     }
 
+    @SuppressLint("Range")
     public List<Item> getList(int plan,int type,int day) {
         List<Item> list = new ArrayList<>();
 

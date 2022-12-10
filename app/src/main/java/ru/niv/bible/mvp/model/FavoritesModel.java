@@ -1,5 +1,6 @@
 package ru.niv.bible.mvp.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -25,6 +26,7 @@ public class FavoritesModel extends Model {
         this.context = context;
     }
 
+    @SuppressLint("Range")
     public List<Item> getList(int tab) {
         List<Item> list = new ArrayList<>();
         Cursor cursor;

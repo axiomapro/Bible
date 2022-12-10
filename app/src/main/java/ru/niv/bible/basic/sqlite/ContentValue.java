@@ -84,7 +84,34 @@ public class ContentValue {
         cv.put("type",0);
         cv.put("start",(String) null);
         cv.put("finish",(String) null);
+        cv.put("notification",(String) null);
         cv.put("status",0);
+        return cv;
+    }
+
+    public ContentValues notificationReadingPlan(String notification) {
+        cv.clear();
+        cv.put("notification",notification);
+        return cv;
+    }
+
+    public ContentValues addDailyVerse(String name,String chapters,String updated,String notification) {
+        cv.clear();
+        cv.put("name",name);
+        cv.put("chapters",chapters);
+        cv.put("sort",0);
+        cv.put("updated",updated);
+        cv.put("notification",notification);
+        cv.put("del",0);
+        return cv;
+    }
+
+    public ContentValues editDailyVerse(String name,String chapters,String updated,String notification) {
+        cv.clear();
+        cv.put("name",name);
+        cv.put("chapters",chapters);
+        cv.put("updated",updated);
+        cv.put("notification",notification);
         return cv;
     }
 

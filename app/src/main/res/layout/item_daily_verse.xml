@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/itemName"
+        android:text="Genesis 1:9"
+        android:textStyle="bold"
+        android:textColor="?attr/searchItemName"
+        android:textSize="17sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/itemText"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="5dp"
+        android:textSize="15sp"
+        android:text="Then God said, “Let the waters under the heavens be gathered together into one place, and let dry land apper”; and it was so."
+        android:textColor="?attr/searchItemText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/itemChapter"
+        android:text="Genesis 25:9"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <GridLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/itemShare"
+            android:gravity="center"
+            android:layout_columnWeight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:src="@drawable/ic_share_daily_verse"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemCopy"
+            android:gravity="center"
+            android:layout_columnWeight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:src="@drawable/ic_copy_daily_verse"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemEdit"
+            android:gravity="center"
+            android:layout_columnWeight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:src="@drawable/ic_edit_daily_verse"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemRefresh"
+            android:gravity="center"
+            android:layout_columnWeight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:src="@drawable/ic_refresh_daily_verse"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+
+        </LinearLayout>
+
+    </GridLayout>
+
+</LinearLayout>
