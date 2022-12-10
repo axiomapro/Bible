@@ -213,11 +213,10 @@ public class DailyVerseFragment extends Fragment implements DailyVerseContract.V
             isIgnoreCheckBox = true;
             cbSelectAll.setChecked(true);
         }
-        else if (selected == total - 1) {
+        if (selected == total - 1 && cbSelectAll.isChecked()) {
             isIgnoreCheckBox = true;
             cbSelectAll.setChecked(false);
         }
-        else isIgnoreCheckBox = false;
     }
 
     private void editor(boolean add,String name,String chapters,String notification,int position) {
@@ -258,9 +257,19 @@ public class DailyVerseFragment extends Fragment implements DailyVerseContract.V
                 if (found) selected++;
             }
             tvSelected.setText(String.valueOf(selected));
-            checkSelectedAll();
             adapterEditorLeft.notifyDataSetChanged();
             adapterEditorRight.notifyDataSetChanged();
+            if (selected == total) {
+                if (!cbSelectAll.isChecked()) {
+                    isIgnoreCheckBox = true;
+                    cbSelectAll.setChecked(true);
+                }
+            } else {
+                if (cbSelectAll.isChecked()) {
+                    isIgnoreCheckBox = true;
+                    cbSelectAll.setChecked(false);
+                }
+            }
         }
     }
 
@@ -297,8 +306,6 @@ public class DailyVerseFragment extends Fragment implements DailyVerseContract.V
         svEditor.setVisibility(View.GONE);
         tvToolbar.setText(R.string.daily_verses);
         fab.setImageResource(R.drawable.ic_add);
-        isIgnoreCheckBox = true;
-        cbSelectAll.setChecked(false);
     }
 
     public boolean checkBack() {
