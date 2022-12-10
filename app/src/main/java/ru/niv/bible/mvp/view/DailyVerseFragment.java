@@ -296,6 +296,8 @@ public class DailyVerseFragment extends Fragment implements DailyVerseContract.V
         svEditor.setVisibility(View.GONE);
         tvToolbar.setText(R.string.daily_verses);
         fab.setImageResource(R.drawable.ic_add);
+        isIgnoreCheckBox = true;
+        cbSelectAll.setChecked(false);
     }
 
     public boolean checkBack() {
