@@ -48,6 +48,7 @@ import java.util.List;
 
 import ru.niv.bible.basic.component.Converter;
 import ru.niv.bible.basic.component.JSON;
+import ru.niv.bible.basic.component.Payment;
 import ru.niv.bible.basic.component.Speech;
 import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
 import ru.niv.bible.basic.component.Alarm;
@@ -83,17 +84,15 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     private Checker checker;
     private Handler handler;
     private JSON json;
+    private Payment payment;
     private Go go;
     private Param param;
     private RecyclerViewAdapter adapter;
     private List<Item> list;
-    private BillingClient billingClient;
-    private SkuDetails skuDetails;
     private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
-    private final String product = "nivbible1"; // product ID для совершения покупки
     private String jsonPath;
-    private boolean isAd;
+    private boolean isAd = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +131,34 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         Converter converter = new Converter();
         go = new Go(this);
         json = new JSON();
+        payment = new Payment(this, new Payment.Status() {
+            @Override
+            public void paid() {
+                param.setBoolean(Static.paramPurchase,true);
+                handler.removeMessages(1);
+                adView.post(() -> {
+                    visibleItemRemoveAds(false);
+                    adView.setVisibility(View.GONE);
+                });
+            }
+
+            @Override
+            public void notPaid(boolean launch) {
+                param.setBoolean(Static.paramPurchase,false);
+                // handler.sendEmptyMessageDelayed(1,15000);
+                visibleItemRemoveAds(true);
+                payment.getProducts(launch);
+            }
+
+            @Override
+            public void verifyPayment() {
+                adView.post(() -> {
+                    param.setBoolean(Static.paramPurchase,true);
+                    visibleItemRemoveAds(false);
+                    adView.setVisibility(View.GONE);
+                });
+            }
+        });
         checker = new Checker(this);
         handler = new Handler(msg -> {
             if (msg.what == 1) checkLoadAd();
@@ -197,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         if (checker.internet()) checkRateDialog();
         setParams();
         manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
-        checkPurchase();
+        // checkPurchase();
         checkNotifications();
     }
 
@@ -213,113 +240,9 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void checkPurchase() {
-        initializeBillingClient();
+        payment.initializeBillingClient();
         if (!checker.internet() && param.getBoolean(Static.paramPurchase)) return;
-        connectGooglePlayBilling(false);
-    }
-
-    private void initializeBillingClient() {
-        billingClient = BillingClient.newBuilder(getApplicationContext())
-                .setListener(new PurchasesUpdatedListener() {
-                    @Override
-                    public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
-                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
-                            for (Purchase purchase : list) {
-                                verifyPayment(purchase);
-                            }
-                        }
-
-                    }
-                })
-                .enablePendingPurchases()
-                .build();
-    }
-
-    private void connectGooglePlayBilling(boolean launch) {
-        final BillingClient finalBillingClient = billingClient;
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingServiceDisconnected() {
-                Log.d(Static.log,"Не удалось присоединиться");
-                connectGooglePlayBilling(false);
-            }
-
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    finalBillingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, (billingResult1, list) -> {
-                        if (billingResult1.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && list.size() > 0) {
-                            Log.d(Static.log,"Приложение куплено");
-                            param.setBoolean(Static.paramPurchase,true);
-                            handler.removeMessages(1);
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                visibleItemRemoveAds(false);
-                                adView.setVisibility(View.GONE);
-                            },300);
-                        } else {
-                            Log.d(Static.log,"Приложение не куплено");
-                            param.setBoolean(Static.paramPurchase,false);
-                            handler.sendEmptyMessageDelayed(1,15000);
-                            visibleItemRemoveAds(true);
-                            getProducts(launch);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    private void getProducts(boolean launch) {
-        List<String> skuList = new ArrayList<>();
-        skuList.add(product);
-        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
-        billingClient.querySkuDetailsAsync(params.build(),
-                (billingResult, skuDetailsList) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
-                        Log.d(Static.log,"Узнаем цены");
-                        for (SkuDetails skuDetails : skuDetailsList) {
-                            if (skuDetails.getSku().equals(product)) {
-                                setSkuDetails(skuDetails);
-                                if (launch) launchPurchaseFlow(skuDetails);
-                            }
-                        }
-                    }
-
-                });
-    }
-
-    private void launchPurchaseFlow(SkuDetails skuDetails) {
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(skuDetails)
-                .build();
-        billingClient.launchBillingFlow(this, billingFlowParams);
-    }
-
-    private void verifyPayment(Purchase purchase) {
-        ConsumeParams consumeParams = ConsumeParams.newBuilder()
-                .setPurchaseToken(purchase.getPurchaseToken())
-                .build();
-
-        ConsumeResponseListener listener = (billingResult, s) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                if (purchase.getSkus().get(0).equals(product)) {
-                    Log.d(Static.log,"Купили только что, прячем рекламу");
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        param.setBoolean(Static.paramPurchase,true);
-                        visibleItemRemoveAds(false);
-                        adView.setVisibility(View.GONE);
-                    },300);
-                }
-            }
-
-        };
-
-        billingClient.consumeAsync(consumeParams, listener);
-    }
-
-    private void setSkuDetails(SkuDetails skuDetails) {
-        this.skuDetails = skuDetails;
+        payment.connectGooglePlayBilling(false);
     }
 
     private void setClickListeners() {
@@ -359,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
             else Static.screen = Static.main;
             if (Static.screen.equals(Static.main)) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             else drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            if (!param.getBoolean(Static.paramPurchase)) handler.sendEmptyMessageDelayed(1,3000);
+            // if (!param.getBoolean(Static.paramPurchase)) handler.sendEmptyMessageDelayed(1,3000);
         });
     }
 
@@ -414,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         for (int i = 0; i < items.length; i++) {
             list.add(new Item().sidebar(items[i],icons[i],true));
         }
-        list.add(new Item().sidebar(getString(R.string.remove_ads),R.drawable.ic_menu_remove_ads,false));
+        // list.add(new Item().sidebar(getString(R.string.remove_ads),R.drawable.ic_menu_remove_ads,false));
         RecyclerView recyclerView = findViewById(R.id.recyclerViewSidebar);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RecyclerViewAdapter(Static.sidebar,list);
@@ -427,10 +350,10 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     if (position == 8) {
-                        if (skuDetails == null) {
-                            if (checker.internet()) connectGooglePlayBilling(true);
+                        if (payment.getSkuDetails() == null) {
+                            if (checker.internet()) payment.connectGooglePlayBilling(true);
                             else message(getString(R.string.turn_on_the_internet));
-                        } else launchPurchaseFlow(skuDetails);
+                        } else payment.launchPurchaseFlow();
                     } else {
                         String item = adapter.getItem(position).getName();
                         Fragment fragment = null;
@@ -531,18 +454,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     @Override
     protected void onResume() {
         super.onResume();
-        billingClient.queryPurchasesAsync(
-                BillingClient.SkuType.INAPP,
-                (billingResult, list) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                        for (Purchase purchase : list) {
-                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged()) {
-                                verifyPayment(purchase);
-                            }
-                        }
-                    }
-                }
-        );
+        // payment.resume();
     }
 
     @Override
