@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
     private String jsonPath;
-    private boolean isAd = true;
+    private boolean isAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
             @Override
             public void notPaid(boolean launch) {
                 param.setBoolean(Static.paramPurchase,false);
-                // handler.sendEmptyMessageDelayed(1,15000);
+                handler.sendEmptyMessageDelayed(1,15000);
                 visibleItemRemoveAds(true);
                 payment.getProducts(launch);
             }
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
             else Static.screen = Static.main;
             if (Static.screen.equals(Static.main)) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             else drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            // if (!param.getBoolean(Static.paramPurchase)) handler.sendEmptyMessageDelayed(1,3000);
+            if (!isAd && !param.getBoolean(Static.paramPurchase)) handler.sendEmptyMessageDelayed(1,3000);
         });
     }
 
