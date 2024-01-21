@@ -143,10 +143,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Main
             }
         });
 
-        new Handler().postDelayed(() -> {
-            adapter.notifyDataSetChanged();
+        viewPager.post(() -> {
+            viewPager.setAdapter(adapter);
             loading(false);
-        },100);
+        });
     }
 
     private void setCurrentItem() {

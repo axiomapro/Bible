@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         initViews();
         iniClasses();
         initSidebar();
+        checkPurchase();
         checkDatabase();
         setClickListeners();
         MobileAds.initialize(this, initializationStatus -> {
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void iniClasses() {
+        manager = getSupportFragmentManager();
         Converter converter = new Converter();
         go = new Go(this);
         json = new JSON();
@@ -191,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void setParams() {
-        manager = getSupportFragmentManager();
         Static.screen = Static.main;
 
         jsonPath = getFilesDir()+"/"+"book.json";
@@ -221,11 +222,10 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     private void launch() {
-        if (checker.internet()) checkRateDialog();
         setParams();
-        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
-        // checkPurchase();
         checkNotifications();
+        if (checker.internet()) checkRateDialog();
+        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
     }
 
     private void checkNotifications() {
@@ -337,11 +337,10 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         for (int i = 0; i < items.length; i++) {
             list.add(new Item().sidebar(items[i],icons[i],true));
         }
-        // list.add(new Item().sidebar(getString(R.string.remove_ads),R.drawable.ic_menu_remove_ads,false));
+        list.add(new Item().sidebar(getString(R.string.remove_ads),R.drawable.ic_menu_remove_ads,false));
         RecyclerView recyclerView = findViewById(R.id.recyclerViewSidebar);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RecyclerViewAdapter(Static.sidebar,list);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         adapter.setListener(new RecyclerViewAdapter.Click() {
             @Override
@@ -425,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         for (int i = 0; i < manager.getBackStackEntryCount(); i++) {
             manager.popBackStack();
         }
-        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
+        manager.beginTransaction().replace(R.id.container,new MainFragment(),Static.main).commit();
     }
 
     private void checkLoadAd() {
@@ -454,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     @Override
     protected void onResume() {
         super.onResume();
-        // payment.resume();
+        payment.resume();
     }
 
     @Override
