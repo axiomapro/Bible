@@ -57,7 +57,7 @@
 
         </RelativeLayout>
 
-        <ru.niv.bible.basic.component.EnhancedWrapContentViewPager
+        <ru.niv.bible.component.immutable.box.EnhancedWrapContentViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

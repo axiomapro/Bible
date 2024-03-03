@@ -7,6 +7,4 @@
     android:pivotX="50%"
     android:pivotY="50%"
     android:fillAfter="true"
-    android:duration="100">
-
-</scale>
+    android:duration="100"/>

@@ -1,6 +1,5 @@
 package ru.niv.bible;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
@@ -20,18 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeParams;
-import com.android.billingclient.api.ConsumeResponseListener;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -43,55 +30,50 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import ru.niv.bible.component.immutable.box.Alarm;
+import ru.niv.bible.component.immutable.box.Checker;
+import ru.niv.bible.component.immutable.box.Config;
+import ru.niv.bible.component.immutable.box.Convert;
+import ru.niv.bible.component.immutable.box.Go;
+import ru.niv.bible.component.immutable.box.JSON;
+import ru.niv.bible.component.immutable.box.Param;
+import ru.niv.bible.component.immutable.box.Payment;
+import ru.niv.bible.component.immutable.box.Speech;
+import ru.niv.bible.component.immutable.box.Static;
+import ru.niv.bible.component.mutable.receiver.RebootReceiver;
+import ru.niv.bible.component.mutable.sqlite.DatabaseHelper;
+import ru.niv.bible.component.mutable.sqlite.Upgrade;
+import ru.niv.bible.fragment.ContentFragment;
+import ru.niv.bible.fragment.FavoritesFragment;
+import ru.niv.bible.fragment.FeedbackFragment;
+import ru.niv.bible.fragment.FolderFragment;
+import ru.niv.bible.fragment.ListFragment;
+import ru.niv.bible.fragment.MainFragment;
+import ru.niv.bible.fragment.SearchFragment;
+import ru.niv.bible.fragment.SettingsFragment;
+import ru.niv.bible.fragment.interactive.CommonNotesFragment;
+import ru.niv.bible.fragment.interactive.DailyVerseFragment;
+import ru.niv.bible.fragment.interactive.ReadingPlanFragment;
+import ru.niv.bible.mediator.contract.FragmentContract;
+import ru.niv.bible.mediator.contract.MessageContract;
+import ru.niv.bible.mediator.contract.RecyclerViewContract;
+import ru.niv.bible.mediator.core.Mediator;
+import ru.niv.bible.mediator.view.Rview;
 
-import ru.niv.bible.basic.component.Converter;
-import ru.niv.bible.basic.component.JSON;
-import ru.niv.bible.basic.component.Payment;
-import ru.niv.bible.basic.component.Speech;
-import ru.niv.bible.basic.list.adapter.RecyclerViewAdapter;
-import ru.niv.bible.basic.component.Alarm;
-import ru.niv.bible.basic.component.Checker;
-import ru.niv.bible.basic.component.Dialog;
-import ru.niv.bible.basic.component.Go;
-import ru.niv.bible.basic.component.Param;
-import ru.niv.bible.basic.component.Static;
-import ru.niv.bible.basic.list.item.Item;
-import ru.niv.bible.basic.receiver.AlertReceiver;
-import ru.niv.bible.basic.receiver.RebootReceiver;
-import ru.niv.bible.basic.sqlite.DatabaseHelper;
-import ru.niv.bible.basic.sqlite.Upgrade;
-import ru.niv.bible.mvp.model.MainModel;
-import ru.niv.bible.mvp.presenter.MainPresenter;
-import ru.niv.bible.mvp.view.CommonNotesFragment;
-import ru.niv.bible.mvp.view.ContentFragment;
-import ru.niv.bible.mvp.view.DailyVerseFragment;
-import ru.niv.bible.mvp.view.FavoritesFragment;
-import ru.niv.bible.mvp.view.FeedbackFragment;
-import ru.niv.bible.mvp.view.FolderFragment;
-import ru.niv.bible.mvp.view.ListFragment;
-import ru.niv.bible.mvp.view.MainFragment;
-import ru.niv.bible.mvp.view.ReadingPlanFragment;
-import ru.niv.bible.mvp.view.SearchFragment;
-import ru.niv.bible.mvp.view.SettingsFragment;
-
-public class MainActivity extends AppCompatActivity implements Go.Message {
+public class MainActivity extends AppCompatActivity implements FragmentContract.MainChild, FragmentContract.Settings, MessageContract {
 
     private FragmentManager manager;
+    private Mediator mediator;
+    private Rview rview;
     private Speech speech;
     private AdView adView;
     private Checker checker;
     private Handler handler;
-    private JSON json;
     private Payment payment;
     private Go go;
     private Param param;
-    private RecyclerViewAdapter adapter;
-    private List<Item> list;
     private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
-    private String jsonPath;
     private boolean isAd;
 
     @Override
@@ -113,12 +95,13 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         param = new Param(this);
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-            setTheme(R.style.Dark);
+            Static.forcedDarkMode = true;
             Static.lightTheme = false;
-        }
-        else {
-            setTheme(param.getBoolean(Static.paramTheme) ? R.style.Theme_Bible : R.style.Dark);
-            Static.lightTheme = param.getBoolean(Static.paramTheme);
+            setTheme(R.style.Dark);
+        } else {
+            Static.forcedDarkMode = false;
+            Static.lightTheme = param.getBoolean(Config.param().theme());
+            setTheme(Static.lightTheme ? R.style.Theme_Bible : R.style.Dark);
         }
     }
 
@@ -130,13 +113,14 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
     private void iniClasses() {
         manager = getSupportFragmentManager();
-        Converter converter = new Converter();
+        mediator = new Mediator(this);
+        rview = mediator.view().rview();
+        Convert convert = new Convert();
         go = new Go(this);
-        json = new JSON();
         payment = new Payment(this, new Payment.Status() {
             @Override
             public void paid() {
-                param.setBoolean(Static.paramPurchase,true);
+                param.setBoolean(Config.param().purchase(),true);
                 handler.removeMessages(1);
                 adView.post(() -> {
                     visibleItemRemoveAds(false);
@@ -146,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
             @Override
             public void notPaid(boolean launch) {
-                param.setBoolean(Static.paramPurchase,false);
+                param.setBoolean(Config.param().purchase(),false);
                 handler.sendEmptyMessageDelayed(1,15000);
                 visibleItemRemoveAds(true);
                 payment.getProducts(launch);
@@ -155,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
             @Override
             public void verifyPayment() {
                 adView.post(() -> {
-                    param.setBoolean(Static.paramPurchase,true);
+                    param.setBoolean(Config.param().purchase(),true);
                     visibleItemRemoveAds(false);
                     adView.setVisibility(View.GONE);
                 });
@@ -167,11 +151,11 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
             return false;
         });
 
-        int voiceLanguage = param.getInt(Static.paramLanguage);
+        int voiceLanguage = param.getInt(Config.param().language());
         speech = new Speech();
-        speech.check(voiceLanguage == 4?"es":"en",converter.getCountry(voiceLanguage),this);
-        speech.setSpeed((float) (1 + param.getInt(Static.paramReadingSpeed)) / 10);
-        speech.setPitch((float) (10 + param.getInt(Static.paramSpeechPitch)) / 10);
+        speech.check(voiceLanguage == 4?"es":"en",convert.getCountry(voiceLanguage),this);
+        speech.setSpeed((float) (1 + param.getInt(Config.param().readingSpeed())) / 10);
+        speech.setPitch((float) (10 + param.getInt(Config.param().speechPitch())) / 10);
 
         speech.getTextToSpeech().setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
@@ -180,34 +164,30 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
             @Override
             public void onDone(String utteranceId) {
-                if (Static.screen.equals(Static.main)) getMainFragment().getMainChild(getMainFragment().getPosition()).onDone();
-                else ((SettingsFragment) getSupportFragmentManager().findFragmentByTag(Static.settings)).audio(false);
+                if (Static.screen.equals(Config.screen().main())) getMainFragment().getMainChild(getMainFragment().getPosition()).onDone();
+                else ((SettingsFragment) getSupportFragmentManager().findFragmentByTag(Config.screen().settings())).audio(false);
             }
 
             @Override
             public void onError(String utteranceId) {
-                if (Static.screen.equals(Static.main)) getMainFragment().getMainChild(getMainFragment().getPosition()).stop();
-                else ((SettingsFragment) getSupportFragmentManager().findFragmentByTag(Static.settings)).audio(false);
+                if (Static.screen.equals(Config.screen().main())) getMainFragment().getMainChild(getMainFragment().getPosition()).stop();
+                else ((SettingsFragment) getSupportFragmentManager().findFragmentByTag(Config.screen().settings())).audio(false);
             }
         });
     }
 
     private void setParams() {
-        Static.screen = Static.main;
+        Static.screen = Config.screen().main();
 
-        jsonPath = getFilesDir()+"/"+"book.json";
-        if (!param.getBoolean(Static.paramFirstLaunch)) {
-            MainModel model = new MainModel(this);
+        if (!param.getBoolean(Config.param().firstLaunch())) {
             // maxPosition
-            int maxPosition = param.getInt(Static.paramMaxPosition);
-            if (maxPosition == 0) param.setInt(Static.paramMaxPosition,model.getMaxPosition());
+            int maxPosition = param.getInt(Config.param().maxPosition());
+            if (maxPosition == 0) param.setInt(Config.param().maxPosition(),mediator.get().data().getMaxPositionMain());
             // isSupportHead
-            param.setBoolean(Static.paramSupportHead,model.isSupportHead());
-            // create json
-            json.create(model.createJson(),jsonPath);
-            param.setBoolean(Static.paramFirstLaunch,true);
+            param.setBoolean(Config.param().supportHead(),mediator.get().data().isSupportHeadMain());
+            param.setBoolean(Config.param().firstLaunch(),true);
         }
-        Static.supportHead = param.getBoolean(Static.paramSupportHead);
+        Static.supportHead = param.getBoolean(Config.param().supportHead());
     }
 
     private void checkDatabase() {
@@ -216,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         databaseHelper.openDb();
 
         if (databaseHelper.isUpgrade()) {
-            param.setBoolean(Static.paramFirstLaunch,false);
+            param.setBoolean(Config.param().firstLaunch(),false);
             new Upgrade(this, databaseHelper, this::launch).execute();
         } else launch();
     }
@@ -225,13 +205,12 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         setParams();
         checkNotifications();
         if (checker.internet()) checkRateDialog();
-        manager.beginTransaction().add(R.id.container,new MainFragment(),Static.main).commit();
+        mediator.transition(manager,new MainFragment(),Config.screen().main(),0,false,false);
     }
 
     private void checkNotifications() {
         Alarm alarm = new Alarm(this);
-        MainModel model = new MainModel(this);
-        model.checkOneNotification((type, id) -> {
+        mediator.get().data().checkOneNotificationMain((id, type) -> {
             if (id > 0 && !alarm.checkAlarm(id,type.equals("reading plan"))) {
                 RebootReceiver rebootReceiver = new RebootReceiver();
                 rebootReceiver.onReceive(getApplicationContext(),null);
@@ -241,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
     private void checkPurchase() {
         payment.initializeBillingClient();
-        if (!checker.internet() && param.getBoolean(Static.paramPurchase)) return;
+        if (!checker.internet() && param.getBoolean(Config.param().purchase())) return;
         payment.connectGooglePlayBilling(false);
     }
 
@@ -279,47 +258,35 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         manager.addOnBackStackChangedListener(() -> {
             int total = manager.getBackStackEntryCount();
             if (total > 0) Static.screen = manager.getBackStackEntryAt(total - 1).getName();
-            else Static.screen = Static.main;
-            if (Static.screen.equals(Static.main)) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            else Static.screen = Config.screen().main();
+            if (Static.screen.equals(Config.screen().main())) drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             else drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            if (!isAd && !param.getBoolean(Static.paramPurchase)) handler.sendEmptyMessageDelayed(1,3000);
+            if (!isAd && !param.getBoolean(Config.param().purchase())) handler.sendEmptyMessageDelayed(1,3000);
         });
     }
 
     private void checkRateDialog() {
-        boolean rate = param.getBoolean(Static.paramRate);
+        boolean rate = param.getBoolean(Config.param().rate());
         if (!rate) return;
-        int visit = param.getInt(Static.paramVisit);
+        int visit = param.getInt(Config.param().visit());
         if (visit >= 5) {
             visit = 0;
-            Dialog dialog = new Dialog(this);
-            dialog.rate(type -> {
+            mediator.show().dialog().rate(type -> {
                 if (type.equals("rate")) {
-                    param.setBoolean(Static.paramRate,false);
+                    param.setBoolean(Config.param().rate(),false);
                     go.browser("market://details?id=" + getPackageName(), getString(R.string.google_play_not_found), MainActivity.this);
                 }
                 if (type.equals("never")) {
-                    param.setBoolean(Static.paramRate,false);
+                    param.setBoolean(Config.param().rate(),false);
                 }
             });
         } else visit++;
-        param.setInt(Static.paramVisit,visit);
+        param.setInt(Config.param().visit(),visit);
     }
 
     private void visibleItemRemoveAds(boolean status) {
-        list.get(8).setVisible(status);
-        adapter.notifyDataSetChanged();
-    }
-
-    public JSONObject getJsonInfo(int position) {
-        JSONObject result = null;
-        try {
-            JSONArray jsonArray = new JSONArray(json.get(jsonPath));
-            result = jsonArray.getJSONObject(position);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return result;
+        rview.getItem(rview.getTotal() - 1).setVisible(status);
+        rview.update();
     }
 
     public Speech getSpeech() {
@@ -327,87 +294,66 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
     }
 
     public MainFragment getMainFragment() {
-        return ((MainFragment) manager.findFragmentByTag(Static.main));
+        return ((MainFragment) manager.findFragmentByTag(Config.screen().main()));
     }
 
     private void initSidebar() {
-        list = new ArrayList<>();
-        String[] items = {getString(R.string.favorites),getString(R.string.reading_plan),getString(R.string.daily_verse),getString(R.string.common_notes),getString(R.string.settings),getString(R.string.feedback),getString(R.string.menu_share_app),getString(R.string.menu_day_night)};
-        int[] icons = {R.drawable.ic_menu_favorites,R.drawable.ic_menu_reading_plan,R.drawable.ic_menu_daily_verse,R.drawable.ic_menu_common_notes,R.drawable.ic_menu_settings,R.drawable.ic_menu_feedback,R.drawable.ic_share_sidebar,R.drawable.ic_menu_day};
-        for (int i = 0; i < items.length; i++) {
-            list.add(new Item().sidebar(items[i],icons[i],true));
-        }
-        list.add(new Item().sidebar(getString(R.string.remove_ads),R.drawable.ic_menu_remove_ads,false));
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewSidebar);
-        adapter = new RecyclerViewAdapter(Static.sidebar,list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-        adapter.setListener(new RecyclerViewAdapter.Click() {
+        rview.setRecyclerView(findViewById(R.id.recyclerViewSidebar));
+        rview.initialize(Config.recyclerView().sidebar(), mediator.get().list().sidebarMain(), new LinearLayoutManager(this), new RecyclerViewContract.Click() {
             @Override
-            public void onClick(int position) {
+            public void click(int position) {
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    if (position == 8) {
+                    if (!rview.getItem(position).getName().equals(getString(R.string.menu_share_app)) && !rview.getItem(position).getName().equals(getString(R.string.menu_day_night)) && !rview.getItem(position).getName().equals(getString(R.string.remove_ads))) {
+                        MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Config.screen().main());
+                        mainFragment.getMainChild(mainFragment.getPosition()).stop();
+                    }
+
+                    if (rview.getItem(position).getName().equals(getString(R.string.favorites))) {
+                        mediator.transition(manager,new FavoritesFragment(),Config.screen().favorites(),Static.ALPHA_ANIMATION,true,true);
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.reading_plan))) {
+                        mediator.transition(manager,new ReadingPlanFragment(),Config.screen().readingPlan(),Static.ALPHA_ANIMATION,true,true);
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.daily_verse))) {
+                        mediator.transition(manager,new DailyVerseFragment(),Config.screen().dailyVerse(),Static.ALPHA_ANIMATION,true,true);
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.common_notes))) {
+                        mediator.transition(manager,new CommonNotesFragment(),Config.screen().commonNotes(),Static.ALPHA_ANIMATION,false,true);
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.settings))) {
+                        mediator.transition(manager,new SettingsFragment(),Config.screen().settings(),Static.ALPHA_ANIMATION,true,true);
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.feedback))) {
+                        mediator.transition(manager,new FeedbackFragment(),Config.screen().feedback(),Static.ALPHA_ANIMATION,false,true);
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.menu_share_app))) {
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        ((MainFragment) manager.findFragmentByTag(Config.screen().main())).shareApp();
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.menu_day_night))) {
+                        param.setBoolean(Config.param().theme(),!Static.lightTheme);
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                        return;
+                    }
+                    else if (rview.getItem(position).getName().equals(getString(R.string.remove_ads))) {
                         if (payment.getSkuDetails() == null) {
                             if (checker.internet()) payment.connectGooglePlayBilling(true);
                             else message(getString(R.string.turn_on_the_internet));
                         } else payment.launchPurchaseFlow();
-                    } else {
-                        String item = adapter.getItem(position).getName();
-                        Fragment fragment = null;
-
-                        switch (item) {
-                            case Static.favorites:
-                                fragment = new FavoritesFragment();
-                                break;
-                            case Static.readingPlan:
-                                fragment = new ReadingPlanFragment();
-                                break;
-                            case Static.dailyVerse:
-                                fragment = new DailyVerseFragment();
-                                break;
-                            case Static.commonNotes:
-                                fragment = new CommonNotesFragment();
-                                break;
-                            case Static.settings:
-                                fragment = new SettingsFragment();
-                                break;
-                            case Static.feedback:
-                                fragment = new FeedbackFragment();
-                                break;
-                            case Static.shareApp:
-                                drawerLayout.closeDrawer(GravityCompat.START);
-                                MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
-                                mainFragment.shareApp();
-                                return;
-                            case Static.dayNight:
-                                if (Static.lightTheme) {
-                                    param.setBoolean(Static.paramTheme, false);
-                                } else {
-                                    param.setBoolean(Static.paramTheme, true);
-                                }
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                finish();
-                                return;
-                        }
-
-                        MainFragment mainFragment = (MainFragment) manager.findFragmentByTag(Static.main);
-                        mainFragment.getMainChild(mainFragment.getPosition()).stop();
-                        if (item.equals(Static.feedback)) manager.beginTransaction().add(R.id.container,new FeedbackFragment(),Static.feedback).addToBackStack(Static.feedback).commit();
-                        else if (item.equals(Static.commonNotes)) manager.beginTransaction().add(R.id.container,new CommonNotesFragment(),Static.commonNotes).addToBackStack(Static.commonNotes).commit();
-                        else manager.beginTransaction().replace(R.id.container,fragment,item).addToBackStack(item).commit();
                     }
                 },300);
             }
 
             @Override
-            public void onLongClick(int position) {
+            public void longClick(int position) {
 
             }
 
             @Override
-            public void onCheckBox(int position,boolean isChecked) {
+            public void checkBox(int position, boolean isChecked) {
 
             }
         });
@@ -417,18 +363,8 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Static.screen = Static.main;
-        for (int i = 0; i < manager.getBackStackEntryCount(); i++) {
-            manager.popBackStack();
-        }
-        manager.beginTransaction().replace(R.id.container,new MainFragment(),Static.main).commit();
-    }
-
     private void checkLoadAd() {
-        if (isAd || !checker.internet() || param.getBoolean(Static.paramPurchase)) return;
+        if (isAd || !checker.internet() || param.getBoolean(Config.param().purchase())) return;
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
         adView.setVisibility(View.VISIBLE);
@@ -440,13 +376,13 @@ public class MainActivity extends AppCompatActivity implements Go.Message {
 
     @Override
     public void onBackPressed() {
-        if (Static.screen.equals(Static.list) && !((ListFragment) manager.findFragmentByTag(Static.list)).checkBackSearch()) return;
-        else if (Static.screen.equals(Static.content) && !((ContentFragment) manager.findFragmentByTag(Static.content)).checkBack()) return;
-        else if (Static.screen.equals(Static.folder) && !((FolderFragment) manager.findFragmentByTag(Static.folder)).checkBackSearch()) return;
-        else if (Static.screen.equals(Static.search) && !((SearchFragment) manager.findFragmentByTag(Static.search)).checkBackSelect()) return;
-        else if (Static.screen.equals(Static.main) && !((MainFragment) manager.findFragmentByTag(Static.main)).getMainChild(((MainFragment) manager.findFragmentByTag(Static.main)).getPosition()).checkBack()) return;
-        else if (Static.screen.equals(Static.commonNotes) && !((CommonNotesFragment) manager.findFragmentByTag(Static.commonNotes)).checkBackSearch()) return;
-        else if (Static.screen.equals(Static.dailyVerse) && !((DailyVerseFragment) manager.findFragmentByTag(Static.dailyVerse)).checkBack()) return;
+        if (Static.screen.equals(Config.screen().list()) && !((ListFragment) manager.findFragmentByTag(Config.screen().list())).checkBackSearch()) return;
+        else if (Static.screen.equals(Config.screen().content()) && !((ContentFragment) manager.findFragmentByTag(Config.screen().content())).checkBack()) return;
+        else if (Static.screen.equals(Config.screen().folder()) && !((FolderFragment) manager.findFragmentByTag(Config.screen().folder())).checkBackSearch()) return;
+        else if (Static.screen.equals(Config.screen().search()) && !((SearchFragment) manager.findFragmentByTag(Config.screen().search())).checkBackSelect()) return;
+        else if (Static.screen.equals(Config.screen().main()) && !((MainFragment) manager.findFragmentByTag(Config.screen().main())).getMainChild(((MainFragment) manager.findFragmentByTag(Config.screen().main())).getPosition()).checkBack()) return;
+        else if (Static.screen.equals(Config.screen().commonNotes()) && !((CommonNotesFragment) manager.findFragmentByTag(Config.screen().commonNotes())).checkBackSearch()) return;
+        else if (Static.screen.equals(Config.screen().dailyVerse()) && !((DailyVerseFragment) manager.findFragmentByTag(Config.screen().dailyVerse())).checkBack()) return;
         else super.onBackPressed();
     }
 

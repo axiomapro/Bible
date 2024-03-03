@@ -17,8 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 
-import ru.niv.bible.basic.component.Param;
-import ru.niv.bible.basic.component.Static;
+import ru.niv.bible.component.immutable.box.Config;
+import ru.niv.bible.component.immutable.box.Param;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
         Param param = new Param(this);
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) setTheme(R.style.Dark);
-        else setTheme(param.getBoolean(Static.paramTheme) ? R.style.Theme_Bible : R.style.Dark);
+        else setTheme(param.getBoolean(Config.param().theme()) ? R.style.Theme_Bible : R.style.Dark);
     }
 
     private int getColorFromAttr(int attr) {
