@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
         initViews();
         iniClasses();
         initSidebar();
-        checkPurchase();
         checkDatabase();
         setClickListeners();
         MobileAds.initialize(this, initializationStatus -> {
@@ -203,9 +202,10 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
 
     private void launch() {
         setParams();
-        checkNotifications();
-        if (checker.internet()) checkRateDialog();
         mediator.transition(manager,new MainFragment(),Config.screen().main(),0,false,false);
+        if (checker.internet()) checkRateDialog();
+        checkNotifications();
+        checkPurchase();
     }
 
     private void checkNotifications() {
@@ -285,8 +285,10 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
     }
 
     private void visibleItemRemoveAds(boolean status) {
-        rview.getItem(rview.getTotal() - 1).setVisible(status);
-        rview.update();
+        runOnUiThread(() -> {
+            rview.getItem(rview.getTotal() - 1).setVisible(status);
+            rview.update();
+        });
     }
 
     public Speech getSpeech() {
@@ -336,10 +338,9 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
                         param.setBoolean(Config.param().theme(),!Static.lightTheme);
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
-                        return;
                     }
                     else if (rview.getItem(position).getName().equals(getString(R.string.remove_ads))) {
-                        if (payment.getSkuDetails() == null) {
+                        if (payment.getProductDetails() == null) {
                             if (checker.internet()) payment.connectGooglePlayBilling(true);
                             else message(getString(R.string.turn_on_the_internet));
                         } else payment.launchPurchaseFlow();
