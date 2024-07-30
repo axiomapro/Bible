@@ -1,7 +1,10 @@
 package ru.niv.bible;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -38,6 +42,7 @@ import ru.niv.bible.component.immutable.box.Go;
 import ru.niv.bible.component.immutable.box.JSON;
 import ru.niv.bible.component.immutable.box.Param;
 import ru.niv.bible.component.immutable.box.Payment;
+import ru.niv.bible.component.immutable.box.Permission;
 import ru.niv.bible.component.immutable.box.Speech;
 import ru.niv.bible.component.immutable.box.Static;
 import ru.niv.bible.component.mutable.receiver.RebootReceiver;
@@ -209,6 +214,12 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
     }
 
     private void checkNotifications() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},200);
+            }
+        }
+
         Alarm alarm = new Alarm(this);
         mediator.get().data().checkOneNotificationMain((id, type) -> {
             if (id > 0 && !alarm.checkAlarm(id,type.equals("reading plan"))) {

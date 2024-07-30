@@ -16,10 +16,10 @@ public class Permission {
     }
 
     public boolean check(String permission) {
-        boolean result = false;
+        boolean result = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-                result = true;
+            if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                result = false;
             }
         }
         return result;

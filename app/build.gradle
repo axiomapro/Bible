@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33 // Заменить на 33 версию (Android 13)
+    compileSdkVersion 34 // Заменить на 34 версию (Android 14)
 
     defaultConfig {
         applicationId "ru.niv.bible"
         minSdkVersion 21
-        targetSdkVersion 33 // Заменить на 33 версию (Android 13)
+        targetSdkVersion 34 // Заменить на 34 версию (Android 14)
         versionCode 4
         versionName "4.0"
 
@@ -25,7 +25,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    lintOptions {
+    namespace 'ru.niv.bible'
+    lint {
         checkReleaseBuilds false
     }
 }
