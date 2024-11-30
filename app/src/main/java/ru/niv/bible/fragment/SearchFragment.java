@@ -140,7 +140,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void checkBox(int position, boolean isChecked) {
+            public void checkBox(int position, int day, boolean isChecked) {
                 if (isBlockListenerCheckBox) return;
                 int id = rview.getItem(position).getId();
 
@@ -158,6 +158,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     ids = ids.replaceAll(","+id,"");
                 }
                 tvSelected.setText(String.valueOf(totalCheckBox));
+            }
+
+            @Override
+            public void link(String link) {
+
             }
         });
     }

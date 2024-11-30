@@ -20,12 +20,7 @@ public class Alarm {
 
     public boolean checkAlarm(int id,boolean readingPlan) {
         Intent intent = new Intent(context, AlertReceiver.class);
-        PendingIntent pendingIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getBroadcast(context, readingPlan?id:(10000+id), intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            pendingIntent = PendingIntent.getBroadcast(context, readingPlan?id:(10000+id), intent, PendingIntent.FLAG_NO_CREATE);
-        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, readingPlan?id:(10000+id), intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
         return (pendingIntent != null);
     }
 
@@ -46,6 +41,7 @@ public class Alarm {
 
     public long getTime(String time) {
         Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,0);
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time.split(":")[0]));
         calendar.set(Calendar.MINUTE, Integer.parseInt(time.split(":")[1]));
         return calendar.getTimeInMillis();
@@ -62,12 +58,7 @@ public class Alarm {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlertReceiver.class);
 
-        PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getBroadcast(context,readingPlan?id:(10000+id),intent,PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            pendingIntent = PendingIntent.getBroadcast(context,readingPlan?id:(10000+id),intent,0);
-        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,readingPlan?id:(10000+id),intent,PendingIntent.FLAG_IMMUTABLE);
         alarmManager.cancel(pendingIntent);
     }
 

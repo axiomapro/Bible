@@ -1,5 +1,8 @@
 package ru.niv.bible.fragment.interactive;
 
+import android.app.AlarmManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import ru.niv.bible.MainActivity;
 import ru.niv.bible.component.immutable.box.Alarm;
 import ru.niv.bible.component.immutable.box.Config;
 import ru.niv.bible.component.immutable.box.Convert;
@@ -222,6 +226,12 @@ public class ReadingPlanContainerFragment extends Fragment implements View.OnCli
                 dialog(id,3,90);
                 break;
             case R.id.imageViewNotification:
+                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !alarmManager.canScheduleExactAlarms()) {
+                    ((MainActivity) getActivity()).checkExactAlarm();
+                    return;
+                }
+
                 mediator.show().dialog().notification(notificationPlan, (time, status) -> {
                     String correctTime = alarm.restoreTime(time);
                     if (status) alarm.set(id,alarm.getTime(correctTime),true);

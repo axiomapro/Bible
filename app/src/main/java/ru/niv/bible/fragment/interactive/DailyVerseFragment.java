@@ -1,10 +1,12 @@
 package ru.niv.bible.fragment.interactive;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -179,11 +181,16 @@ public class DailyVerseFragment extends Fragment implements View.OnClickListener
             }
 
             @Override
-            public void checkBox(int position, boolean isChecked) {
+            public void checkBox(int position, int day, boolean isChecked) {
                 if (rviewEditorLeft.getItem(position).isCheckBox()) selected++;
                 else selected--;
                 tvSelected.setText(String.valueOf(selected));
                 checkSelectedAll();
+            }
+
+            @Override
+            public void link(String link) {
+
             }
         });
     }
@@ -207,11 +214,16 @@ public class DailyVerseFragment extends Fragment implements View.OnClickListener
             }
 
             @Override
-            public void checkBox(int position, boolean isChecked) {
+            public void checkBox(int position, int day, boolean isChecked) {
                 if (rviewEditorRight.getItem(position).isCheckBox()) selected++;
                 else selected--;
                 tvSelected.setText(String.valueOf(selected));
                 checkSelectedAll();
+            }
+
+            @Override
+            public void link(String link) {
+
             }
         });
     }
@@ -348,6 +360,12 @@ public class DailyVerseFragment extends Fragment implements View.OnClickListener
     }
 
     public void add(String name,String chapters,String notification) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !alarmManager.canScheduleExactAlarms()) {
+            ((MainActivity) getActivity()).checkExactAlarm();
+            return;
+        }
+
         String correctName = convert.getNameUppercase(name,false);
         mediator.handler().add().dailyVerse(mediator.form().send().dailyVerse(name,chapters,notification).get(), new ResultContract() {
             @Override
@@ -368,6 +386,12 @@ public class DailyVerseFragment extends Fragment implements View.OnClickListener
     }
 
     public void edit(int id,String name,String chapters,String notification,int itemPosition) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !alarmManager.canScheduleExactAlarms()) {
+            ((MainActivity) getActivity()).checkExactAlarm();
+            return;
+        }
+
         String correctName = convert.getNameUppercase(name,false);
         mediator.handler().edit().dailyVerse(id,mediator.form().send().dailyVerse(correctName, chapters, datetime.getDatetime(), notification).get(), new ResultContract() {
             @Override

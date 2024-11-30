@@ -1,10 +1,13 @@
 package ru.niv.bible.mediator.list.item;
 
+import java.util.List;
+
 public class Item {
 
-    private String name, text, note, folderName, date, chapterName, chapters, notification;
-    private boolean checkBox, favorite, underline, click, divider, active, head, visible;
-    private int id, icon, chapter, page, position, type, total, number, color, folder;
+    private List<Item> list;
+    private String name, text, note, folderName, links, date, chapterName, chapters, notification;
+    private boolean checkBox, favorite, underline, click, divider, active, head, visible, expand;
+    private int id, icon, chapter, page, day, position, type, total, number, color, folder;
 
     public Item sidebar(String name, int icon, boolean visible) {
         this.name = name;
@@ -105,6 +108,22 @@ public class Item {
         this.page = page;
         this.position = position;
         this.active = active;
+        return this;
+    }
+
+    public Item readingPlanMaterial(String name, List<Item> list, boolean expand) {
+        this.name = name;
+        this.list = list;
+        this.expand = expand;
+        return this;
+    }
+
+    public Item readingPlanChildMaterial(String links,String date,int day,boolean divider,boolean checkBox) {
+        this.links = links;
+        this.date = date;
+        this.day = day;
+        this.divider = divider;
+        this.checkBox = checkBox;
         return this;
     }
 
@@ -306,5 +325,25 @@ public class Item {
 
     public boolean isActive() {
         return active;
+    }
+
+    public void setExpand(boolean expand) {
+        this.expand = expand;
+    }
+
+    public boolean isExpand() {
+        return expand;
+    }
+
+    public String getLinks() {
+        return links;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public List<Item> getList() {
+        return list;
     }
 }

@@ -50,6 +50,10 @@ public class RecyclerViewConfig {
         return "reading plan material";
     }
 
+    public String readingPlanChildMaterial() {
+        return "reading plan child material";
+    }
+
     public String dailyVerse() {
         return "daily verse";
     }

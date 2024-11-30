@@ -21,8 +21,12 @@ public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Alarm alarm = new Alarm(context);
-        String type =intent.getStringExtra("type");
+        String type = intent.getStringExtra("type");
         int alarmId = intent.getIntExtra("alarmId",1);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !alarmManager.canScheduleExactAlarms()) return;
+
         if (type.equals("reading plan")) { // every day
             alarm.set(alarmId,System.currentTimeMillis() + AlarmManager.INTERVAL_DAY,true);
             notification(context,context.getString(R.string.notification_title),context.getString(R.string.notification_text));

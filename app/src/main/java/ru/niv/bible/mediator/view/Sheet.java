@@ -177,7 +177,12 @@ public class Sheet implements View.OnClickListener {
             }
 
             @Override
-            public void checkBox(int position, boolean isChecked) {
+            public void checkBox(int position, int day, boolean status) {
+
+            }
+
+            @Override
+            public void link(String link) {
 
             }
         });

@@ -1,9 +1,12 @@
 package ru.niv.bible;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -211,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
         if (checker.internet()) checkRateDialog();
         checkNotifications();
         checkPurchase();
+        checkExactAlarm();
     }
 
     private void checkNotifications() {
@@ -365,7 +369,12 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
             }
 
             @Override
-            public void checkBox(int position, boolean isChecked) {
+            public void checkBox(int position, int day, boolean status) {
+
+            }
+
+            @Override
+            public void link(String link) {
 
             }
         });
@@ -373,6 +382,15 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
 
     public void openDrawerMenu() {
         drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void checkExactAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !alarmManager.canScheduleExactAlarms()) {
+            Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            intent.setData(Uri.fromParts("package", getPackageName(), null));
+            startActivity(intent);
+        }
     }
 
     private void checkLoadAd() {

@@ -5,8 +5,12 @@ import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -14,9 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -100,6 +105,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> implem
                 if (screen.equals(Config.recyclerView().commonNotesList())) item = R.layout.item_common_notes;
                 if (screen.equals(Config.recyclerView().commonNotesGrid())) item = R.layout.item_common_notes_grid;
                 if (screen.equals(Config.recyclerView().readingPlanChild())) item = R.layout.item_reading_plan_child;
+                if (screen.equals(Config.recyclerView().readingPlanMaterial())) item = R.layout.item_reading_plan_material;
+                if (screen.equals(Config.recyclerView().readingPlanChildMaterial())) item = R.layout.item_reading_plan_material_child;
                 if (screen.equals(Config.recyclerView().dailyVerse())) item = R.layout.item_daily_verse;
                 if (screen.equals(Config.recyclerView().dailyVerseEditor())) item = R.layout.item_daily_verse_editor;
         }
@@ -231,7 +238,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> implem
                     // listener
                     holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         item.setCheckBox(isChecked);
-                        if (listener != null) listener.checkBox(position,holder.checkBox.isChecked());
+                        if (listener != null) listener.checkBox(position,0,holder.checkBox.isChecked());
                     });
                 }
                 if (screen.equals(Config.recyclerView().commonNotesList())) {
@@ -254,6 +261,55 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> implem
                     }
 
                 }
+                if (screen.equals(Config.recyclerView().readingPlanMaterial())) {
+                    holder.tvName.setText(item.getName());
+                    holder.ivToggle.setImageResource(item.isExpand()?R.drawable.ic_up_settings:R.drawable.ic_down_settings);
+                    holder.recyclerView.setVisibility(item.isExpand()?View.VISIBLE:View.GONE);
+
+                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(Config.recyclerView().readingPlanChildMaterial(),item.getList());
+                    holder.recyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+                    holder.recyclerView.setAdapter(adapter);
+                    adapter.setListener(new RecyclerViewContract.Click() {
+                        @Override
+                        public void click(int position) {
+
+                        }
+
+                        @Override
+                        public void longClick(int position) {
+
+                        }
+
+                        @Override
+                        public void checkBox(int childPosition, int day, boolean status) {
+                            if (listener != null) listener.checkBox(0,day,status);
+                        }
+
+                        @Override
+                        public void link(String link) {
+                            if (listener != null) listener.link(link);
+                        }
+                    });
+                }
+                if (screen.equals(Config.recyclerView().readingPlanChildMaterial())) {
+                    setTextViewHTML(holder.tvLinks,item.getLinks());
+                    int color = Static.lightTheme?Color.parseColor("#80000000"):Color.parseColor("#808080");
+                    holder.tvLinks.setAlpha(item.isCheckBox()?0.6f:1.0f);
+                    holder.tvLinks.setLinkTextColor(color);
+                    holder.tvLinks.setTextColor(color);
+                    holder.tvDate.setText(item.getDate());
+                    holder.vDivider.setVisibility(item.isDivider()?View.VISIBLE:View.GONE);
+                    // block redraw
+                    holder.checkBox.setOnCheckedChangeListener(null);
+                    // checkable
+                    holder.checkBox.setChecked(item.isCheckBox());
+                    // listener
+                    holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        item.setCheckBox(isChecked);
+                        notifyItemChanged(position);
+                        listener.checkBox(0,item.getDay(),isChecked);
+                    });
+                }
                 if (screen.equals(Config.recyclerView().dailyVerse())) {
                     holder.tvName.setText(item.getName());
                     holder.tvText.setText(item.getText().replaceAll("\\<[^>]*>",""));
@@ -272,7 +328,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> implem
                     // listener
                     holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         item.setCheckBox(isChecked);
-                        if (listener != null) listener.checkBox(position,holder.checkBox.isChecked());
+                        if (listener != null) listener.checkBox(position,0,holder.checkBox.isChecked());
                     });
                 }
 
@@ -321,6 +377,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> implem
         String[] cut = date.split("-");
         result = cut[2]+"."+cut[1]+"."+cut[0];
         return result;
+    }
+
+    private void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
+        int start = strBuilder.getSpanStart(span);
+        int end = strBuilder.getSpanEnd(span);
+        int flags = strBuilder.getSpanFlags(span);
+        ClickableSpan clickable = new ClickableSpan() {
+            public void onClick(View view) {
+                listener.link(span.getURL());
+            }
+        };
+        strBuilder.setSpan(clickable, start, end, flags);
+        strBuilder.removeSpan(span);
+    }
+
+    private void setTextViewHTML(TextView text, String html) {
+        CharSequence sequence = Html.fromHtml(html);
+        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+        for(URLSpan span : urls) {
+            makeLinkClickable(strBuilder, span);
+        }
+        text.setText(strBuilder);
+        text.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private final Filter filter = new Filter() {
