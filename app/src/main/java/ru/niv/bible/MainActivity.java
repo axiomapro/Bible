@@ -214,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements FragmentContract.
         if (checker.internet()) checkRateDialog();
         checkNotifications();
         checkPurchase();
-        checkExactAlarm();
     }
 
     private void checkNotifications() {

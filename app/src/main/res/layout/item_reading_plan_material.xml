@@ -33,6 +33,9 @@
         android:id="@+id/itemRecyclerView"
         android:visibility="gone"
         android:overScrollMode="never"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
