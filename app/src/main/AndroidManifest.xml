@@ -4,12 +4,11 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/> <!-- Добавить новое разрешение для показа рекламы на Android 13 -->
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <queries>
         <package android:name="com.google.android.gm" />
@@ -25,9 +24,9 @@
         android:theme="@style/Theme.Bible"
         android:dataExtractionRules="@xml/data_extraction_rules">
         <!-- Новый параметр exported, он необходим для Android 13, только один имеет значение true, это экран заставки -->
-        <activity android:exported="false" android:name="ru.niv.bible.MainActivity" android:hardwareAccelerated="true" android:screenOrientation="portrait" android:configChanges="screenSize|keyboardHidden"/>
+        <activity android:exported="false" android:name="ru.ampstudy.bible.MainActivity" android:hardwareAccelerated="true" android:screenOrientation="portrait" android:configChanges="screenSize|keyboardHidden"/>
         <!-- Новый параметр exported, он необходим для Android 13, только один имеет значение true, это экран заставки -->
-        <activity android:exported="true" android:name="ru.niv.bible.SplashActivity" android:screenOrientation="portrait" android:configChanges="screenSize|keyboardHidden">
+        <activity android:exported="true" android:name="ru.ampstudy.bible.SplashActivity" android:screenOrientation="portrait" android:configChanges="screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,7 +44,8 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5337279788139159~7224687319"/>
+            android:value="ca-app-pub-9041187040625593~1839142968"/>
+
     </application>
 
 </manifest>
